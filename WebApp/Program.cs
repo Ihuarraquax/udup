@@ -1,6 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Udup;
+using Udup.WebApp;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,29 +37,3 @@ app.Run();
 
 
 public partial class Program { }
-
-public record DomainEventAHappened : INotification;
-
-public class DomainEventAHappenedHandlerA : INotificationHandler<DomainEventAHappened>
-{
-    public Task Handle(DomainEventAHappened notification, CancellationToken cancellationToken)
-    {
-        return Task.CompletedTask;
-    }
-}
-
-public class DomainEventAHappenedHandlerB : INotificationHandler<DomainEventAHappened>
-{
-    public Task Handle(DomainEventAHappened notification, CancellationToken cancellationToken)
-    {
-        return Task.CompletedTask;
-    }
-}
-
-public class DomainEventAHappenedHandlerC : INotificationHandler<DomainEventAHappened>
-{
-    public Task Handle(DomainEventAHappened notification, CancellationToken cancellationToken)
-    {
-        return Task.CompletedTask;
-    }
-}

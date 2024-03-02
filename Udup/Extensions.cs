@@ -9,6 +9,7 @@ public static class Extensions
 {
     public static IServiceCollection AddUdup(this IServiceCollection services)
     {
+        services.AddTransient<Parser>();
         return services;
     }    
     
@@ -21,7 +22,7 @@ public static class Extensions
             
             if (httpMethod == "GET" && path.EndsWith("udup"))
             {
-                var result = new UdupResponse(["123"], ["234"]);
+                var result = context.RequestServices.GetRequiredService<Parser>().Parse(AppDomain.CurrentDomain.GetAssemblies());
                 var json = JsonSerializer.Serialize(result);
                 await context.Response.WriteAsync(json);
                 return;
