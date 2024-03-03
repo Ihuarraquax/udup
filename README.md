@@ -1,5 +1,5 @@
 # Udup
-> Unified diagrams (???) project - just some buzzwords that make it look like this word stands for something.
+> Unified documentation (???) project - just some buzzwords that make it look like this word stands for something.
 
 ## General Information
 - Generate nice living documentation from code
