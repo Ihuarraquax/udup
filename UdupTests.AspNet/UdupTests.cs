@@ -24,10 +24,10 @@ public class BasicTests
         // Arrange
 
         // Act
-        var response = await client.GetFromJsonAsync<UdupResponse>("/udup");
+        var response = await client.GetFromJsonAsync<UdupResponse>("/udup.json");
 
         // Assert
-        response.Events.Should().HaveCount(1);
-        response.EventHandlers.Should().HaveCount(1);
+        response.Events.Should().HaveCount(2);
+        response.EventHandlers.Should().HaveCount(3);
     }
 }
