@@ -5,15 +5,24 @@
 
 <body>
 <pre class="mermaid">
-    block-beta
+    graph LR
 DomainEventAHappenedHandlerA(DomainEventAHappenedHandlerA)
-DomainEventAHappenedHandlerA <-- DomainEventAHappened
+DomainEventAHappened --> DomainEventAHappenedHandlerA
 DomainEventAHappenedHandlerB(DomainEventAHappenedHandlerB)
-DomainEventAHappenedHandlerB <-- DomainEventAHappened
+DomainEventAHappened --> DomainEventAHappenedHandlerB
 DomainEventAHappenedHandlerC(DomainEventAHappenedHandlerC)
-DomainEventAHappenedHandlerC <-- DomainEventAHappened
+DomainEventAHappened --> DomainEventAHappenedHandlerC
+DomainEventAHappenedHandlerD(DomainEventAHappenedHandlerD)
+DomainEventAHappened --> DomainEventAHappenedHandlerD
+DomainEventBHappenedHandlerA(DomainEventBHappenedHandlerA)
+DomainEventBHappened --> DomainEventBHappenedHandlerA
+DomainEventBAndCHappenedHandlerA(DomainEventBAndCHappenedHandlerA)
+DomainEventBHappened --> DomainEventBAndCHappenedHandlerA
+DomainEventCHappened --> DomainEventBAndCHappenedHandlerA
 DomainEventAHappened((DomainEventAHappened))
 DomainEventBHappened((DomainEventBHappened))
+DomainEventCHappened((DomainEventCHappened))
+DomainEventDHappened((DomainEventDHappened))
 
 </pre>
 

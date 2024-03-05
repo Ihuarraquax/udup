@@ -65,12 +65,16 @@ internal static class GraphBuilder
         foreach (var handler in result.EventHandlers)
         {
             graphBuilder.AppendLine($"{handler.Name}({handler.Name})");
-            graphBuilder.AppendLine($"{handler.Event} --> {handler.Name}");
+
+            foreach (var handlingEvent in handler.Events)
+            {
+                graphBuilder.AppendLine($"{handlingEvent} --> {handler.Name}");
+            }
         }
         
         foreach (var @event in result.Events)
         {
-            graphBuilder.AppendLine($"{@event}({@event})");
+            graphBuilder.AppendLine($"{@event}(({@event}))");
         }
 
         return graphBuilder.ToString();

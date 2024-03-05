@@ -27,8 +27,7 @@ public class BasicTests
         var response = await client.GetFromJsonAsync<UdupResponse>("/udup.json");
 
         // Assert
-        response.Events.Should().HaveCount(2);
-        response.EventHandlers.Should().HaveCount(3);
+        await Verify(response);
     }
     
     [Fact]
