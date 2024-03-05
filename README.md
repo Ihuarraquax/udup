@@ -6,4 +6,5 @@
 
 ## Road map
 
-- [ ] Display events and event handlers in a diagram
+- [x] Display events and event handlers in a diagram
+- [ ] Find a way to collect information about places where events are dispatched
