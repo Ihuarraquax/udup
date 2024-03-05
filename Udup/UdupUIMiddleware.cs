@@ -47,9 +47,32 @@ public class UdupUiMiddleware
             // Inject arguments before writing to response
             var htmlBuilder = new StringBuilder(await reader.ReadToEndAsync());
             var result = Parser.Parse(AppDomain.CurrentDomain.GetAssemblies());
-            var json = JsonSerializer.Serialize(result);
-            htmlBuilder.Replace("__Events__", json);
+
+            var graph = GraphBuilder.Build(result);
+            
+            htmlBuilder.Replace("__Graph__", graph);
             await response.WriteAsync(htmlBuilder.ToString(), Encoding.UTF8);
         }
+    }
+}
+
+internal static class GraphBuilder
+{
+    public static string Build(UdupResponse result)
+    {
+        var graphBuilder = new StringBuilder("graph LR\n");
+
+        foreach (var handler in result.EventHandlers)
+        {
+            graphBuilder.AppendLine($"{handler.Name}({handler.Name})");
+            graphBuilder.AppendLine($"{handler.Event} --> {handler.Name}");
+        }
+        
+        foreach (var @event in result.Events)
+        {
+            graphBuilder.AppendLine($"{@event}({@event})");
+        }
+
+        return graphBuilder.ToString();
     }
 }

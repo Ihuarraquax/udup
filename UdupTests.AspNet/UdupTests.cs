@@ -19,7 +19,7 @@ public class BasicTests
     }
 
     [Fact]
-    public async Task GetUdupEndpoint()
+    public async Task GetUdupJsonEndpoint()
     {
         // Arrange
 
@@ -29,5 +29,17 @@ public class BasicTests
         // Assert
         response.Events.Should().HaveCount(2);
         response.EventHandlers.Should().HaveCount(3);
+    }
+    
+    [Fact]
+    public async Task GetUdupDiagramEndpoint()
+    {
+        // Arrange
+
+        // Act
+        var html = await client.GetStringAsync("/udup");
+
+        // Assert
+        await Verify(html, "html");
     }
 }
