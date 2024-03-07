@@ -5,3 +5,7 @@ Looks like I should use c# analyzers for this. Question is: can it analyze sourc
 Will try to make it live, but if not, static file generated with build will be also fine, I think even so, other information that should be collected at runtime could use other methods.
 
 As for now, I will dive into Roslyn and learn the basics.
+
+I started with https://learn.microsoft.com/en-us/dotnet/csharp/roslyn-sdk/
+
+The goal is to recreate actual functionality with Roslyn and add 'event dispatchers' to diagram, to see where they are coming from (both internal events and external events from message broker)
