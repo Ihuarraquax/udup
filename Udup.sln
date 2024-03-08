@@ -6,6 +6,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UdupTests.AspNet", "UdupTes
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Udup", "Udup\Udup.csproj", "{5AB8D637-D818-4AEC-A1E9-3922950BAB83}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoslynPlayground", "RoslynPlayground\RoslynPlayground.csproj", "{AEBBE349-6460-41CF-B863-328F997EF4F0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{5AB8D637-D818-4AEC-A1E9-3922950BAB83}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5AB8D637-D818-4AEC-A1E9-3922950BAB83}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5AB8D637-D818-4AEC-A1E9-3922950BAB83}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AEBBE349-6460-41CF-B863-328F997EF4F0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AEBBE349-6460-41CF-B863-328F997EF4F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AEBBE349-6460-41CF-B863-328F997EF4F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AEBBE349-6460-41CF-B863-328F997EF4F0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

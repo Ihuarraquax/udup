@@ -9,3 +9,5 @@ As for now, I will dive into Roslyn and learn the basics.
 I started with https://learn.microsoft.com/en-us/dotnet/csharp/roslyn-sdk/
 
 The goal is to recreate actual functionality with Roslyn and add 'event dispatchers' to diagram, to see where they are coming from (both internal events and external events from message broker)
+
+Found that https://www.youtube.com/watch?v=0oXAZQBHH70&ab_channel=NDCConferences and it shows how to start with code.
