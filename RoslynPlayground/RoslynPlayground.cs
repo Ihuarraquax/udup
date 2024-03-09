@@ -1,21 +1,43 @@
-﻿using Microsoft.Build.Locator;
-using Microsoft.CodeAnalysis.MSBuild;
+﻿using FluentAssertions;
 
 namespace RoslynPlayground;
 
-public class RoslynPlayground
+public class RoslynPlayground : IClassFixture<Udup>
 {
-    [Fact]
-    public void Test()
+    private readonly Udup udup;
+
+    public RoslynPlayground(Udup udup)
     {
-        MSBuildLocator.RegisterDefaults();
-        
-        var workspace = MSBuildWorkspace.Create();
-        workspace.LoadMetadataForReferencedProjects = true;
-        
-        workspace.WorkspaceFailed += (sender, args) =>
-        {
-            Console.WriteLine(args.Diagnostic.Message);
-        };
+        this.udup = udup;
+    }
+    
+    [Fact]
+    public async Task GetsAllEventNames()
+    {
+        // Arrange
+
+        // Act
+        var events = await udup.GetEvents();
+
+        // Assert
+        events.Should().BeEquivalentTo(
+        [
+            "DomainEventAHappened", 
+            "DomainEventBHappened", 
+            "DomainEventCHappened",
+            "DomainEventDHappened"
+        ]);
+    }
+    
+    [Fact]
+    public async Task GetsAllEventHandlers()
+    {
+        // Arrange
+
+        // Act
+        var eventHandlers = await udup.GetEventHandlers();
+
+        // Assert
+        await Verify(eventHandlers);
     }
 }

@@ -1,0 +1,39 @@
+﻿[
+  {
+    Name: DomainEventAHappenedHandlerA,
+    Events: [
+      DomainEventAHappened
+    ]
+  },
+  {
+    Name: DomainEventAHappenedHandlerB,
+    Events: [
+      DomainEventAHappened
+    ]
+  },
+  {
+    Name: DomainEventAHappenedHandlerC,
+    Events: [
+      DomainEventAHappened
+    ]
+  },
+  {
+    Name: DomainEventAHappenedHandlerD,
+    Events: [
+      DomainEventAHappened
+    ]
+  },
+  {
+    Name: DomainEventBHappenedHandlerA,
+    Events: [
+      DomainEventBHappened
+    ]
+  },
+  {
+    Name: DomainEventBAndCHappenedHandlerA,
+    Events: [
+      DomainEventBHappened,
+      DomainEventCHappened
+    ]
+  }
+]
