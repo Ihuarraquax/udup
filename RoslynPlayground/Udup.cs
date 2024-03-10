@@ -22,7 +22,7 @@ public class Udup
         this.workspace.WorkspaceFailed += (sender, args) => { Console.WriteLine(args.Diagnostic.Message); };
     }
     
-    public async Task<List<string>> GetEvents()
+    public async Task<List<EventWithTrace>> GetEvents()
     {
         var solution = await workspace.OpenSolutionAsync(@"C:\P\Edu\udup\Udup.sln");
         var events = new List<string>();
@@ -33,10 +33,26 @@ public class Udup
             foreach (var document in project.Documents)
             {
                 events.AddRange(await GetEventsFromSyntaxAndSemantic(compilation, document));
+                await GetEventSource(compilation, document);
             }
         }
 
-        return events;
+        return events.Select(e => new EventWithTrace
+        {
+            Name = e,
+            Sources = null
+        }).ToList();
+    }
+
+    private async Task GetEventSource(Compilation? compilation, Document document)
+    {
+        var tree = await document.GetSyntaxTreeAsync();
+        var root = await tree.GetRootAsync();
+        var semanticModel = compilation.GetSemanticModel(tree);
+
+        var result = root.DescendantNodes().OfType<ObjectCreationExpressionSyntax>()
+            .Where(_ => IsUdupEvent(semanticModel.GetSymbolInfo(_).Symbol.ContainingType))
+            .ToArray();
     }
 
     private async Task<string[]> GetEventsFromSyntaxAndSemantic(Compilation? compilation, Document document)
@@ -103,4 +119,10 @@ public class Udup
                 @interface.IsGenericType)
             .Any();
     }
+}
+
+public class EventWithTrace
+{
+    public string Name { get; set; }
+    public List<string> Sources { get; set; }
 }
