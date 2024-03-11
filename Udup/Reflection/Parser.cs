@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 
-namespace Udup;
+namespace Udup.UdupReflection;
 
 public static class Parser
 {

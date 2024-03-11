@@ -24,6 +24,13 @@ public partial class Udup
         this.workspace.WorkspaceFailed += (sender, args) => { Console.WriteLine(args.Diagnostic.Message); };
     }
 
+
+    public async Task<UdupResponse> Get()
+    {
+        var events = await GetEvents();
+        return new UdupResponse()
+    }
+    
     public async Task<List<EventWithTrace>> GetEvents()
     {
         var solution = await workspace.OpenSolutionAsync(@"C:\P\Edu\udup\Udup.sln");
