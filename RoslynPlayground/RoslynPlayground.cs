@@ -20,13 +20,7 @@ public class RoslynPlayground : IClassFixture<Udup>
         var events = await udup.GetEvents();
 
         // Assert
-        events.Should().BeEquivalentTo(
-        [
-            "DomainEventAHappened", 
-            "DomainEventBHappened", 
-            "DomainEventCHappened",
-            "DomainEventDHappened"
-        ]);
+        await Verify(events);
     }
     
     [Fact]

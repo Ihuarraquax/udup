@@ -1,31 +1,34 @@
-﻿using Microsoft.Build.Locator;
+﻿using System.Text;
+using Microsoft.Build.Locator;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.MSBuild;
+using Microsoft.Extensions.Primitives;
 using Udup;
 using EventHandler = Udup.EventHandler;
 
 namespace RoslynPlayground;
 
-public class Udup
+public partial class Udup
 {
     private readonly MSBuildWorkspace workspace;
 
     public Udup()
     {
         MSBuildLocator.RegisterDefaults();
-        
+
         this.workspace = MSBuildWorkspace.Create();
         this.workspace.LoadMetadataForReferencedProjects = true;
 
         this.workspace.WorkspaceFailed += (sender, args) => { Console.WriteLine(args.Diagnostic.Message); };
     }
-    
+
     public async Task<List<EventWithTrace>> GetEvents()
     {
         var solution = await workspace.OpenSolutionAsync(@"C:\P\Edu\udup\Udup.sln");
         var events = new List<string>();
+        var eventSources = new List<(string Event, string Source)>();
         foreach (var project in solution.Projects)
         {
             var compilation = await project.GetCompilationAsync();
@@ -33,18 +36,26 @@ public class Udup
             foreach (var document in project.Documents)
             {
                 events.AddRange(await GetEventsFromSyntaxAndSemantic(compilation, document));
-                await GetEventSource(compilation, document);
+                eventSources.AddRange(await GetEventSource(compilation, document));
             }
         }
+
+        var eventSourcesDictionary = eventSources
+            .GroupBy(_ => _.Event)
+            .ToDictionary(
+                _ => _.Key,
+                _ => _
+                    .Select(_ => _.Source)
+                    .ToList());
 
         return events.Select(e => new EventWithTrace
         {
             Name = e,
-            Sources = null
+            Sources = eventSourcesDictionary.TryGetValue(e, out var value) ? value : []
         }).ToList();
     }
 
-    private async Task GetEventSource(Compilation? compilation, Document document)
+    private async Task<List<(string Event, string Source)>> GetEventSource(Compilation? compilation, Document document)
     {
         var tree = await document.GetSyntaxTreeAsync();
         var root = await tree.GetRootAsync();
@@ -53,6 +64,47 @@ public class Udup
         var result = root.DescendantNodes().OfType<ObjectCreationExpressionSyntax>()
             .Where(_ => IsUdupEvent(semanticModel.GetSymbolInfo(_).Symbol.ContainingType))
             .ToArray();
+
+        var list = new List<(string Event, string Source)>();
+        foreach (var node in result)
+        {
+            var stringBuilder = BuildPath(node, semanticModel);
+
+            list.Add((semanticModel.GetSymbolInfo(node).Symbol.ContainingType.Name, stringBuilder.ToString()));
+        }
+
+        return list;
+    }
+
+    private static string BuildPath(SyntaxNode node, SemanticModel semanticModel)
+    {
+        var stringBuilder = new StringBuilder();
+
+        if (node is null)
+        {
+            return "";
+        }
+
+        stringBuilder.Append(BuildPath(node.Parent, semanticModel));
+
+        if (node is MethodDeclarationSyntax methodDeclaration)
+        {
+            stringBuilder.Append(methodDeclaration.Identifier.Text);
+            stringBuilder.Append("()");
+        }
+
+        if (node is BaseTypeDeclarationSyntax typeDeclaration)
+        {
+            stringBuilder.Append(typeDeclaration.Identifier.Text);
+            stringBuilder.Append(".");
+        }
+        
+        if (node is ExpressionStatementSyntax expression)
+        {
+            stringBuilder.Append("Endpoint (TODO - gather more details)");
+        }
+
+        return stringBuilder.ToString();
     }
 
     private async Task<string[]> GetEventsFromSyntaxAndSemantic(Compilation? compilation, Document document)
@@ -74,50 +126,6 @@ public class Udup
     {
         return symbol.Interfaces.Any(@interface =>
             $"{@interface.ContainingNamespace.Name}.{@interface.Name}" == $"{typeof(IUdupMessage).FullName}");
-    }
-
-    public async Task<List<EventHandler>> GetEventHandlers()
-    {
-        var solution = await workspace.OpenSolutionAsync(@"C:\P\Edu\udup\Udup.sln");
-
-        var list = new List<EventHandler>();
-        foreach (var project in solution.Projects)
-        {
-            var compilation = await project.GetCompilationAsync();
-
-            foreach (var document in project.Documents)
-            {
-                list.AddRange(await GetEventHandlersFromSyntaxAndSemantic(compilation, document));
-            }
-        }
-
-        return list;
-    }
-    
-    private async Task<EventHandler[]> GetEventHandlersFromSyntaxAndSemantic(Compilation? compilation, Document document)
-    {
-        var tree = await document.GetSyntaxTreeAsync();
-        var root = tree.GetRoot();
-        var semanticModel = compilation.GetSemanticModel(tree);
-
-        return root.DescendantNodes().OfType<BaseTypeDeclarationSyntax>()
-            .Select(syntax => semanticModel.GetDeclaredSymbol(syntax))
-            .Where(symbol => symbol != null)
-            .Where(symbol => symbol!.IsImplicitlyDeclared is false)
-            .Where(IsUdupEventHandler)
-            .Select(_ => new EventHandler(_.Name, _.Interfaces.Where(@interface =>
-                $"{@interface.ContainingNamespace.Name}.{@interface.Name}" == $"{typeof(IUdupHandler).FullName}").Select(_ => _.TypeArguments.First().Name).ToArray()))
-            .ToArray();
-    }
-
-    private bool IsUdupEventHandler(INamedTypeSymbol symbol)
-    {
-        return symbol.Interfaces
-            .Where(@interface =>
-                $"{@interface.ContainingNamespace.Name}.{@interface.Name}" == $"{typeof(IUdupHandler).FullName}")
-            .Where(@interface =>
-                @interface.IsGenericType)
-            .Any();
     }
 }
 

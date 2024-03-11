@@ -1,0 +1,27 @@
+﻿[
+  {
+    Name: DomainEventAHappened,
+    Sources: [
+      Endpoint (TODO - gather more details)Endpoint (TODO - gather more details)
+    ]
+  },
+  {
+    Name: DomainEventBHappened,
+    Sources: [
+      Controller.MakeActionBControllerMethod(),
+      DomainEventBService.SendBEvent()
+    ]
+  },
+  {
+    Name: DomainEventCHappened,
+    Sources: [
+      Endpoint (TODO - gather more details)Endpoint (TODO - gather more details)
+    ]
+  },
+  {
+    Name: DomainEventDHappened,
+    Sources: [
+      Sample.MakeActionD()Endpoint (TODO - gather more details)
+    ]
+  }
+]
