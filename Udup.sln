@@ -8,6 +8,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Udup.Core", "Udup.Core\Udup
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoslynPlayground", "RoslynPlayground\RoslynPlayground.csproj", "{AEBBE349-6460-41CF-B863-328F997EF4F0}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{07C4D153-13FF-437D-998A-0567ED727328}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,10 @@ Global
 		{AEBBE349-6460-41CF-B863-328F997EF4F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AEBBE349-6460-41CF-B863-328F997EF4F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AEBBE349-6460-41CF-B863-328F997EF4F0}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{AEBBE349-6460-41CF-B863-328F997EF4F0} = {07C4D153-13FF-437D-998A-0567ED727328}
+		{2912AF6C-5F89-4629-ADCC-05665F11672F} = {07C4D153-13FF-437D-998A-0567ED727328}
+		{CB98EE5D-316D-4A2A-AD95-7EE3493AC442} = {07C4D153-13FF-437D-998A-0567ED727328}
 	EndGlobalSection
 EndGlobal

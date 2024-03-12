@@ -23,8 +23,9 @@ public partial class UdupService
 
         return list;
     }
-    
-    private async Task<EventHandler[]> GetEventHandlersFromSyntaxAndSemantic(Compilation? compilation, Document document)
+
+    private async Task<EventHandler[]> GetEventHandlersFromSyntaxAndSemantic(Compilation? compilation,
+        Document document)
     {
         var tree = await document.GetSyntaxTreeAsync();
         var root = tree.GetRoot();
@@ -35,8 +36,10 @@ public partial class UdupService
             .Where(symbol => symbol != null)
             .Where(symbol => symbol!.IsImplicitlyDeclared is false)
             .Where(IsUdupEventHandler)
-            .Select(_ => new EventHandler(_.Name, _.Interfaces.Where(@interface =>
-                GetFullName(@interface) == $"{typeof(IUdupHandler).FullName}").Select(_ => _.TypeArguments.First().Name).ToArray()))
+            .Select(_ => new EventHandler(new(_.Name), _.Interfaces.Where(@interface =>
+                    GetFullName(@interface) == $"{typeof(IUdupHandler).FullName}")
+                .Select(_ => new IdAndName(_.TypeArguments.First().Name))
+                .ToArray()))
             .ToArray();
     }
 

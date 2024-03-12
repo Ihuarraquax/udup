@@ -1,27 +1,54 @@
 ﻿[
   {
-    Name: DomainEventAHappened,
+    Event: {
+      Id: DomainEventAHappened,
+      Name: DomainEventAHappened
+    },
     Sources: [
-      Endpoint (TODO - gather more details)Endpoint (TODO - gather more details)
+      {
+        Id: creation966e992,
+        Name: EndpointTODOs866e1023
+      }
     ]
   },
   {
-    Name: DomainEventBHappened,
+    Event: {
+      Id: DomainEventBHappened,
+      Name: DomainEventBHappened
+    },
     Sources: [
-      Controller.MakeActionBControllerMethod(),
-      DomainEventBService.SendBEvent()
+      {
+        Id: creation413e439,
+        Name: Controller.MakeActionBControllerMethod()
+      },
+      {
+        Id: creation381e407,
+        Name: DomainEventBService.SendBEvent()
+      }
     ]
   },
   {
-    Name: DomainEventCHappened,
+    Event: {
+      Id: DomainEventCHappened,
+      Name: DomainEventCHappened
+    },
     Sources: [
-      Endpoint (TODO - gather more details)Endpoint (TODO - gather more details)
+      {
+        Id: creation1337e1363,
+        Name: EndpointTODOs1170e1466
+      }
     ]
   },
   {
-    Name: DomainEventDHappened,
+    Event: {
+      Id: DomainEventDHappened,
+      Name: DomainEventDHappened
+    },
     Sources: [
-      Sample.MakeActionD()Endpoint (TODO - gather more details)
+      {
+        Id: creation567e593,
+        Name: Sample.MakeActionD()
+      }
     ]
   }
 ]

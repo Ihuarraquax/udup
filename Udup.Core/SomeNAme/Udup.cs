@@ -30,15 +30,15 @@ public partial class UdupService
         return new UdupResponse(
             events,
             Enumerable.Select<EventHandler, EventHandler>(eventHandlers, _ => new EventHandler(
-                _.Name, _.Events)).ToList()
+                _.Handler, _.Events)).ToList()
         );
     }
 
     public async Task<List<EventWithTrace>> GetEvents()
     {
         var solution = await workspace.OpenSolutionAsync(@"C:\P\Edu\udup\Udup.sln");
-        var events = new List<string>();
-        var eventSources = new List<(string Event, string Source)>();
+        var events = new List<IdAndName>();
+        var eventSources = new List<(IdAndName Event, IdAndName Source)>();
         foreach (var project in solution.Projects)
         {
             var compilation = await project.GetCompilationAsync();
@@ -51,7 +51,7 @@ public partial class UdupService
         }
 
         var eventSourcesDictionary = eventSources
-            .GroupBy(_ => _.Event)
+            .GroupBy(_ => _.Event.Id)
             .ToDictionary(
                 _ => _.Key,
                 _ => _
@@ -59,10 +59,10 @@ public partial class UdupService
                     .ToList());
 
         return events.Select(e =>
-            new EventWithTrace(e, eventSourcesDictionary.TryGetValue(e, out var value) ? value : [])).ToList();
+            new EventWithTrace(e, eventSourcesDictionary.TryGetValue(e.Id, out var value) ? value : [])).ToList();
     }
 
-    private async Task<List<(string Event, string Source)>> GetEventSource(Compilation? compilation, Document document)
+    private async Task<List<(IdAndName Event, IdAndName Source)>> GetEventSource(Compilation? compilation, Document document)
     {
         var tree = await document.GetSyntaxTreeAsync();
         var root = await tree.GetRootAsync();
@@ -72,15 +72,20 @@ public partial class UdupService
             .Where(_ => IsUdupEvent(semanticModel.GetSymbolInfo(_).Symbol.ContainingType))
             .ToArray();
 
-        var list = new List<(string Event, string Source)>();
+        var list = new List<(IdAndName Event, IdAndName Source)>();
         foreach (var node in result)
         {
             var stringBuilder = BuildPath(node, semanticModel);
 
-            list.Add((semanticModel.GetSymbolInfo(node).Symbol.ContainingType.Name, stringBuilder.ToString()));
+            list.Add((new IdAndName(semanticModel.GetSymbolInfo(node).Symbol.ContainingType.Name), new IdAndName(CreateIdentifier(node),stringBuilder)));
         }
 
         return list;
+    }
+
+    private string CreateIdentifier(ObjectCreationExpressionSyntax node)
+    {
+        return $"creation{node.Span.Start}e{node.Span.End}";
     }
 
     private static string BuildPath(SyntaxNode node, SemanticModel semanticModel)
@@ -106,15 +111,15 @@ public partial class UdupService
             stringBuilder.Append(".");
         }
 
-        if (node is ExpressionStatementSyntax expression)
+        if (node is GlobalStatementSyntax expression)
         {
-            stringBuilder.Append("Endpoint (TODO - gather more details)");
+            stringBuilder.Append($"EndpointTODOs{expression.Span.Start}e{expression.Span.End}");
         }
 
         return stringBuilder.ToString();
     }
 
-    private async Task<string[]> GetEventsFromSyntaxAndSemantic(Compilation? compilation, Document document)
+    private async Task<IdAndName[]> GetEventsFromSyntaxAndSemantic(Compilation? compilation, Document document)
     {
         var tree = await document.GetSyntaxTreeAsync();
         var root = tree.GetRoot();
@@ -125,7 +130,7 @@ public partial class UdupService
             .Where(symbol => symbol != null)
             .Where(symbol => symbol!.IsImplicitlyDeclared is false)
             .Where(IsUdupEvent)
-            .Select(symbol => symbol.Name)
+            .Select(symbol => new IdAndName(symbol.Name))
             .ToArray();
     }
 

@@ -10,17 +10,23 @@ internal static class GraphBuilder
 
         foreach (var handler in result.EventHandlers)
         {
-            graphBuilder.AppendLine($"{handler.Name}({handler.Name})");
+            graphBuilder.AppendLine($"{handler.Handler.Id}(\"{handler.Handler.Name}\")");
 
             foreach (var handlingEvent in handler.Events)
             {
-                graphBuilder.AppendLine($"{handlingEvent} --> {handler.Name}");
+                graphBuilder.AppendLine($"{handlingEvent.Id} --> {handler.Handler.Id}");
             }
         }
         
         foreach (var @event in result.Events)
         {
-            graphBuilder.AppendLine($"{@event.Name}(({@event.Name}))");
+            graphBuilder.AppendLine($"{@event.Event.Id}((\"{@event.Event.Name}\"))");
+            
+            foreach (var source in @event.Sources)
+            {
+                graphBuilder.AppendLine($"{source.Id}((\"{source.Name}\"))");
+                graphBuilder.AppendLine($"{source.Id} --> {@event.Event.Name}");
+            }
         }
 
         return graphBuilder.ToString();

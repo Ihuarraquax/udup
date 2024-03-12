@@ -1,54 +1,105 @@
 ﻿{
   Events: [
     {
-      Name: DomainEventAHappened
+      Event: {
+        Id: DomainEventAHappened,
+        Name: DomainEventAHappened
+      }
     },
     {
-      Name: DomainEventBHappened
+      Event: {
+        Id: DomainEventBHappened,
+        Name: DomainEventBHappened
+      }
     },
     {
-      Name: DomainEventCHappened
+      Event: {
+        Id: DomainEventCHappened,
+        Name: DomainEventCHappened
+      }
     },
     {
-      Name: DomainEventDHappened
+      Event: {
+        Id: DomainEventDHappened,
+        Name: DomainEventDHappened
+      }
     }
   ],
   EventHandlers: [
     {
-      Name: DomainEventAHappenedHandlerA,
+      Handler: {
+        Id: DomainEventAHappenedHandlerA,
+        Name: DomainEventAHappenedHandlerA
+      },
       Events: [
-        DomainEventAHappened
+        {
+          Id: DomainEventAHappened,
+          Name: DomainEventAHappened
+        }
       ]
     },
     {
-      Name: DomainEventAHappenedHandlerB,
+      Handler: {
+        Id: DomainEventAHappenedHandlerB,
+        Name: DomainEventAHappenedHandlerB
+      },
       Events: [
-        DomainEventAHappened
+        {
+          Id: DomainEventAHappened,
+          Name: DomainEventAHappened
+        }
       ]
     },
     {
-      Name: DomainEventAHappenedHandlerC,
+      Handler: {
+        Id: DomainEventAHappenedHandlerC,
+        Name: DomainEventAHappenedHandlerC
+      },
       Events: [
-        DomainEventAHappened
+        {
+          Id: DomainEventAHappened,
+          Name: DomainEventAHappened
+        }
       ]
     },
     {
-      Name: DomainEventAHappenedHandlerD,
+      Handler: {
+        Id: DomainEventAHappenedHandlerD,
+        Name: DomainEventAHappenedHandlerD
+      },
       Events: [
-        DomainEventAHappened
+        {
+          Id: DomainEventAHappened,
+          Name: DomainEventAHappened
+        }
       ]
     },
     {
-      Name: DomainEventBHappenedHandlerA,
+      Handler: {
+        Id: DomainEventBHappenedHandlerA,
+        Name: DomainEventBHappenedHandlerA
+      },
       Events: [
-        DomainEventBHappened
+        {
+          Id: DomainEventBHappened,
+          Name: DomainEventBHappened
+        }
       ]
     },
     {
-      Name: DomainEventBAndCHappenedHandlerA,
+      Handler: {
+        Id: DomainEventBAndCHappenedHandlerA,
+        Name: DomainEventBAndCHappenedHandlerA
+      },
       Events: [
-        DomainEventBHappened,
-        DomainEventCHappened
+        {
+          Id: DomainEventBHappened,
+          Name: DomainEventBHappened
+        },
+        {
+          Id: DomainEventCHappened,
+          Name: DomainEventCHappened
+        }
       ]
     }
   ]

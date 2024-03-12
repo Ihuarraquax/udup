@@ -16,7 +16,7 @@ public static class Parser
             .Where(p => p.IsAssignableTo(typeof(IUdupMessage)))
             .Where(p => p.IsClass);
 
-        return new UdupResponse(allEventTypes.Select(_ => new EventWithTrace(_.Name, new List<string>())).ToList()
+        return new UdupResponse(allEventTypes.Select(_ => new EventWithTrace(new IdAndName(_.Name), [])).ToList()
             ,
             EventHandlers(handlerTypes));
     }
@@ -24,12 +24,12 @@ public static class Parser
     private static List<EventHandler> EventHandlers(IEnumerable<Type> handlerTypes)
     {
         var result =  handlerTypes.Select(handler =>
-            new EventHandler(handler.Name,
+            new EventHandler(new IdAndName(handler.Name),
                 handler.GetInterfaces()
                     .Where(@interface =>
                         @interface.GetInterfaces()
                             .FirstOrDefault() == typeof(IUdupHandler))
-                    .Select(_ => _.GenericTypeArguments.First().Name)
+                    .Select(_ => new IdAndName(_.GenericTypeArguments.First().Name))
                     .ToArray()
             )).ToList();
         return result;
