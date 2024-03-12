@@ -42,7 +42,7 @@ public partial class DatabaseContext
             await mediator.Publish((object)@event, cancellationToken);
         }
         
-        await this.SaveChangesAsync(cancellationToken);
+        await SaveChangesAsync(cancellationToken);
 
         return true;
     }

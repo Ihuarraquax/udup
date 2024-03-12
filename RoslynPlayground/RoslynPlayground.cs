@@ -1,14 +1,15 @@
-﻿using FluentAssertions;
+﻿
+using Udup.Core.SomeNAme;
 
 namespace RoslynPlayground;
 
-public class RoslynPlayground : IClassFixture<Udup>
+public class RoslynPlayground : IClassFixture<UdupService>
 {
-    private readonly Udup udup;
+    private readonly UdupService udupService;
 
-    public RoslynPlayground(Udup udup)
+    public RoslynPlayground(UdupService udupService)
     {
-        this.udup = udup;
+        this.udupService = udupService;
     }
     
     [Fact]
@@ -17,7 +18,7 @@ public class RoslynPlayground : IClassFixture<Udup>
         // Arrange
 
         // Act
-        var events = await udup.GetEvents();
+        var events = await udupService.GetEvents();
 
         // Assert
         await Verify(events);
@@ -29,7 +30,7 @@ public class RoslynPlayground : IClassFixture<Udup>
         // Arrange
 
         // Act
-        var eventHandlers = await udup.GetEventHandlers();
+        var eventHandlers = await udupService.GetEventHandlers();
 
         // Assert
         await Verify(eventHandlers);

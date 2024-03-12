@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Udup;
+namespace Udup.Core;
 
 public static class Extensions
 {

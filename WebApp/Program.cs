@@ -1,6 +1,6 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Udup;
+using Udup.Core;
 using Udup.WebApp;
 using Udup.WebApp.EF;
 

@@ -1,12 +1,10 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Udup;
-using EventHandler = Udup.EventHandler;
 
-namespace RoslynPlayground;
+namespace Udup.Core.SomeNAme;
 
-public partial class Udup
+public partial class UdupService
 {
     public async Task<List<EventHandler>> GetEventHandlers()
     {
@@ -38,7 +36,7 @@ public partial class Udup
             .Where(symbol => symbol!.IsImplicitlyDeclared is false)
             .Where(IsUdupEventHandler)
             .Select(_ => new EventHandler(_.Name, _.Interfaces.Where(@interface =>
-                $"{@interface.ContainingNamespace.Name}.{@interface.Name}" == $"{typeof(IUdupHandler).FullName}").Select(_ => _.TypeArguments.First().Name).ToArray()))
+                GetFullName(@interface) == $"{typeof(IUdupHandler).FullName}").Select(_ => _.TypeArguments.First().Name).ToArray()))
             .ToArray();
     }
 
@@ -46,7 +44,7 @@ public partial class Udup
     {
         return symbol.Interfaces
             .Where(@interface =>
-                $"{@interface.ContainingNamespace.Name}.{@interface.Name}" == $"{typeof(IUdupHandler).FullName}")
+                GetFullName(@interface) == $"{typeof(IUdupHandler).FullName}")
             .Where(@interface =>
                 @interface.IsGenericType)
             .Any();

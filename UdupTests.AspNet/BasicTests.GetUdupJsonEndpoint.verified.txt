@@ -1,9 +1,17 @@
 ﻿{
   Events: [
-    DomainEventAHappened,
-    DomainEventBHappened,
-    DomainEventCHappened,
-    DomainEventDHappened
+    {
+      Name: DomainEventAHappened
+    },
+    {
+      Name: DomainEventBHappened
+    },
+    {
+      Name: DomainEventCHappened
+    },
+    {
+      Name: DomainEventDHappened
+    }
   ],
   EventHandlers: [
     {

@@ -4,33 +4,36 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.MSBuild;
-using Microsoft.Extensions.Primitives;
-using Udup;
-using EventHandler = Udup.EventHandler;
 
-namespace RoslynPlayground;
+namespace Udup.Core.SomeNAme;
 
-public partial class Udup
+public partial class UdupService
 {
     private readonly MSBuildWorkspace workspace;
 
-    public Udup()
+    public UdupService()
     {
         MSBuildLocator.RegisterDefaults();
 
-        this.workspace = MSBuildWorkspace.Create();
-        this.workspace.LoadMetadataForReferencedProjects = true;
+        workspace = MSBuildWorkspace.Create();
+        workspace.LoadMetadataForReferencedProjects = true;
 
-        this.workspace.WorkspaceFailed += (sender, args) => { Console.WriteLine(args.Diagnostic.Message); };
+        workspace.WorkspaceFailed += (sender, args) => { Console.WriteLine(args.Diagnostic.Message); };
     }
 
 
     public async Task<UdupResponse> Get()
     {
         var events = await GetEvents();
-        return new UdupResponse()
+        var eventHandlers = await GetEventHandlers();
+
+        return new UdupResponse(
+            events,
+            Enumerable.Select<EventHandler, EventHandler>(eventHandlers, _ => new EventHandler(
+                _.Name, _.Events)).ToList()
+        );
     }
-    
+
     public async Task<List<EventWithTrace>> GetEvents()
     {
         var solution = await workspace.OpenSolutionAsync(@"C:\P\Edu\udup\Udup.sln");
@@ -55,11 +58,8 @@ public partial class Udup
                     .Select(_ => _.Source)
                     .ToList());
 
-        return events.Select(e => new EventWithTrace
-        {
-            Name = e,
-            Sources = eventSourcesDictionary.TryGetValue(e, out var value) ? value : []
-        }).ToList();
+        return events.Select(e =>
+            new EventWithTrace(e, eventSourcesDictionary.TryGetValue(e, out var value) ? value : [])).ToList();
     }
 
     private async Task<List<(string Event, string Source)>> GetEventSource(Compilation? compilation, Document document)
@@ -105,7 +105,7 @@ public partial class Udup
             stringBuilder.Append(typeDeclaration.Identifier.Text);
             stringBuilder.Append(".");
         }
-        
+
         if (node is ExpressionStatementSyntax expression)
         {
             stringBuilder.Append("Endpoint (TODO - gather more details)");
@@ -132,12 +132,11 @@ public partial class Udup
     private static bool IsUdupEvent(INamedTypeSymbol symbol)
     {
         return symbol.Interfaces.Any(@interface =>
-            $"{@interface.ContainingNamespace.Name}.{@interface.Name}" == $"{typeof(IUdupMessage).FullName}");
+            GetFullName(@interface) == $"{typeof(IUdupMessage).FullName}");
     }
-}
 
-public class EventWithTrace
-{
-    public string Name { get; set; }
-    public List<string> Sources { get; set; }
+    private static string GetFullName(INamedTypeSymbol @interface)
+    {
+        return $"{string.Join('.', @interface.ContainingNamespace.ConstituentNamespaces)}.{@interface.Name}";
+    }
 }

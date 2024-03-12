@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 
-namespace Udup.UdupReflection;
+namespace Udup.Core.UdupReflection;
 
 public static class Parser
 {
@@ -16,7 +16,7 @@ public static class Parser
             .Where(p => p.IsAssignableTo(typeof(IUdupMessage)))
             .Where(p => p.IsClass);
 
-        return new UdupResponse(allEventTypes.Select(_ => _.Name).ToArray()
+        return new UdupResponse(allEventTypes.Select(_ => new EventWithTrace(_.Name, new List<string>())).ToList()
             ,
             EventHandlers(handlerTypes));
     }

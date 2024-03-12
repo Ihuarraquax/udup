@@ -1,8 +1,6 @@
 using System.Net.Http.Json;
-using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Testing;
-using Udup;
-using Xunit;
+using Udup.Core;
 
 namespace UdupTests.AspNet;
 
