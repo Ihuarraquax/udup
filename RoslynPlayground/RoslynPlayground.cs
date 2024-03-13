@@ -1,36 +1,47 @@
-﻿
-using Udup.Core.SomeNAme;
+﻿using Udup.Core.Roslyn;
 
 namespace RoslynPlayground;
 
-public class RoslynPlayground : IClassFixture<UdupService>
+public class RoslynPlayground : IClassFixture<Gatherer>
 {
-    private readonly UdupService udupService;
+    private readonly Gatherer gatherer;
 
-    public RoslynPlayground(UdupService udupService)
+    public RoslynPlayground(Gatherer gatherer)
     {
-        this.udupService = udupService;
+        this.gatherer = gatherer;
     }
-    
+
     [Fact]
-    public async Task GetsAllEventNames()
+    public async Task GetsAllEvents()
     {
         // Arrange
 
         // Act
-        var events = await udupService.GetEvents();
+        var events = await gatherer.GatherEvents();
 
         // Assert
         await Verify(events);
     }
     
     [Fact]
+    public async Task GetsAllEventTraces()
+    {
+        // Arrange
+
+        // Act
+        var events = await gatherer.GatherEventTraces();
+
+        // Assert
+        await Verify(events);
+    }
+
+    [Fact]
     public async Task GetsAllEventHandlers()
     {
         // Arrange
 
         // Act
-        var eventHandlers = await udupService.GetEventHandlers();
+        var eventHandlers = await gatherer.GatherEventHandlers();
 
         // Assert
         await Verify(eventHandlers);

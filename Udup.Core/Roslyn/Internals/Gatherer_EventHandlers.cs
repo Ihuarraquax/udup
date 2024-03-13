@@ -2,14 +2,12 @@
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace Udup.Core.SomeNAme;
+namespace Udup.Core.Roslyn.Internals;
 
-public partial class UdupService
+internal class Gatherer_EventHandlers
 {
-    public async Task<List<EventHandler>> GetEventHandlers()
+    internal static async Task<List<EventHandler>> GetEventHandlers(Solution solution)
     {
-        var solution = await workspace.OpenSolutionAsync(@"C:\P\Edu\udup\Udup.sln");
-
         var list = new List<EventHandler>();
         foreach (var project in solution.Projects)
         {
@@ -17,14 +15,14 @@ public partial class UdupService
 
             foreach (var document in project.Documents)
             {
-                list.AddRange(await GetEventHandlersFromSyntaxAndSemantic(compilation, document));
+                list.AddRange(await GatherFromDocument(compilation, document));
             }
         }
 
         return list;
     }
 
-    private async Task<EventHandler[]> GetEventHandlersFromSyntaxAndSemantic(Compilation? compilation,
+    private static async Task<EventHandler[]> GatherFromDocument(Compilation? compilation,
         Document document)
     {
         var tree = await document.GetSyntaxTreeAsync();
@@ -36,20 +34,16 @@ public partial class UdupService
             .Where(symbol => symbol != null)
             .Where(symbol => symbol!.IsImplicitlyDeclared is false)
             .Where(IsUdupEventHandler)
-            .Select(_ => new EventHandler(new(_.Name), _.Interfaces.Where(@interface =>
-                    GetFullName(@interface) == $"{typeof(IUdupHandler).FullName}")
+            .Select(_ => new EventHandler(new(_.Name), _.Interfaces.Where(@interface => @interface.GetFullName() == $"{typeof(IUdupHandler).FullName}")
                 .Select(_ => new IdAndName(_.TypeArguments.First().Name))
                 .ToArray()))
             .ToArray();
     }
 
-    private bool IsUdupEventHandler(INamedTypeSymbol symbol)
+    private static bool IsUdupEventHandler(INamedTypeSymbol symbol)
     {
         return symbol.Interfaces
-            .Where(@interface =>
-                GetFullName(@interface) == $"{typeof(IUdupHandler).FullName}")
-            .Where(@interface =>
-                @interface.IsGenericType)
-            .Any();
+            .Where(@interface => @interface.GetFullName() == $"{typeof(IUdupHandler).FullName}")
+            .Any(@interface => @interface.IsGenericType);
     }
 }

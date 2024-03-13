@@ -1,8 +1,7 @@
 ﻿using System.Text;
 using System.Text.Json;
 using Microsoft.AspNetCore.Http;
-using Udup.Core.SomeNAme;
-using Udup.Core.UdupReflection;
+using Udup.Core.Roslyn;
 
 namespace Udup.Core;
 
@@ -23,7 +22,7 @@ public class UdupUiMiddleware
             
         if (httpMethod == "GET" && path.EndsWith("udup.json"))
         {
-            var result = Parser.Parse(AppDomain.CurrentDomain.GetAssemblies());
+            var result = await new Gatherer().Gather();
             var json = JsonSerializer.Serialize(result);
             await context.Response.WriteAsync(json);
             return;
@@ -49,7 +48,7 @@ public class UdupUiMiddleware
             // Inject arguments before writing to response
             var htmlBuilder = new StringBuilder(await reader.ReadToEndAsync());
             
-            var result = await new UdupService().Get();
+            var result = await new Gatherer().Gather();
 
             var graph = GraphBuilder.Build(result);
             

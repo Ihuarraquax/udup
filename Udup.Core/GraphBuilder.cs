@@ -8,7 +8,7 @@ internal static class GraphBuilder
     {
         var graphBuilder = new StringBuilder("graph LR\n");
 
-        foreach (var handler in result.EventHandlers)
+        foreach (var handler in result.Handlers)
         {
             graphBuilder.AppendLine($"{handler.Handler.Id}(\"{handler.Handler.Name}\")");
 
@@ -17,16 +17,16 @@ internal static class GraphBuilder
                 graphBuilder.AppendLine($"{handlingEvent.Id} --> {handler.Handler.Id}");
             }
         }
-        
+
         foreach (var @event in result.Events)
         {
-            graphBuilder.AppendLine($"{@event.Event.Id}((\"{@event.Event.Name}\"))");
-            
-            foreach (var source in @event.Sources)
-            {
-                graphBuilder.AppendLine($"{source.Id}((\"{source.Name}\"))");
-                graphBuilder.AppendLine($"{source.Id} --> {@event.Event.Name}");
-            }
+            graphBuilder.AppendLine($"{@event.Id}((\"{@event.Name}\"))");
+        }
+
+        foreach (var trace in result.Traces)
+        {
+            graphBuilder.AppendLine($"{trace.Name.Id}[\"{trace.Name.Name}\"]");
+            graphBuilder.AppendLine($"{trace.Name.Id} --> {trace.Event.Id}");
         }
 
         return graphBuilder.ToString();

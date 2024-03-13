@@ -1,0 +1,18 @@
+﻿[
+  {
+    Id: DomainEventAHappened,
+    Name: DomainEventAHappened
+  },
+  {
+    Id: DomainEventBHappened,
+    Name: DomainEventBHappened
+  },
+  {
+    Id: DomainEventCHappened,
+    Name: DomainEventCHappened
+  },
+  {
+    Id: DomainEventDHappened,
+    Name: DomainEventDHappened
+  }
+]

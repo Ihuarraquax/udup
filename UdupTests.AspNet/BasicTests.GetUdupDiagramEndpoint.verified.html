@@ -20,19 +20,19 @@ DomainEventBAndCHappenedHandlerA("DomainEventBAndCHappenedHandlerA")
 DomainEventBHappened --> DomainEventBAndCHappenedHandlerA
 DomainEventCHappened --> DomainEventBAndCHappenedHandlerA
 DomainEventAHappened(("DomainEventAHappened"))
-creation966e992(("EndpointTODOs866e1023"))
-creation966e992 --> DomainEventAHappened
 DomainEventBHappened(("DomainEventBHappened"))
-creation413e439(("Controller.MakeActionBControllerMethod()"))
-creation413e439 --> DomainEventBHappened
-creation381e407(("DomainEventBService.SendBEvent()"))
-creation381e407 --> DomainEventBHappened
 DomainEventCHappened(("DomainEventCHappened"))
-creation1337e1363(("EndpointTODOs1170e1466"))
-creation1337e1363 --> DomainEventCHappened
 DomainEventDHappened(("DomainEventDHappened"))
-creation567e593(("Sample.MakeActionD()"))
+creation413e439["Controller.MakeActionBControllerMethod()"]
+creation413e439 --> DomainEventBHappened
+creation567e593["Sample.MakeActionD()"]
 creation567e593 --> DomainEventDHappened
+creation381e407["DomainEventBService.SendBEvent()"]
+creation381e407 --> DomainEventBHappened
+creation1024e1050["EndpointTODOs924e1081"]
+creation1024e1050 --> DomainEventAHappened
+creation1395e1421["EndpointTODOs1228e1524"]
+creation1395e1421 --> DomainEventCHappened
 
 </pre>
 

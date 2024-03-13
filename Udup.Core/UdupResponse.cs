@@ -1,20 +1,10 @@
-﻿namespace Udup.Core;
+﻿using Udup.Core.Roslyn.Internals;
 
-public record UdupResponse(List<EventWithTrace> Events, List<EventHandler> EventHandlers);
+namespace Udup.Core;
+
+public record UdupResponse(List<IdAndName> Events, List<EventHandler> Handlers, List<EventTrace> Traces);
 
 public record EventHandler(IdAndName Handler, IdAndName[] Events);
-
-public class EventWithTrace
-{
-    public EventWithTrace(IdAndName @event, List<IdAndName> sources)
-    {
-        Event = @event;
-        Sources = sources;
-    }
-
-    public IdAndName Event { get; set; }
-    public List<IdAndName> Sources { get; set; }
-}
 
 public class IdAndName
 {

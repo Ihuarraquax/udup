@@ -1,6 +1,7 @@
 using System.Net.Http.Json;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Udup.Core;
+using Udup.WebApp;
 
 namespace UdupTests.AspNet;
 

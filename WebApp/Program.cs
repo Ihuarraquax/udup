@@ -12,7 +12,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddMediatR(configuration =>
 {
-    configuration.RegisterServicesFromAssemblyContaining<Program>();
+    configuration.RegisterServicesFromAssemblyContaining<Udup.WebApp.Program>();
 } );
 builder.Services.AddUdup();
 builder.Services.AddScoped<IDomainEventBService, DomainEventBService>();
@@ -29,6 +29,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.MapDomainEventAEndpointsWithService();
 
 app.MapGet("/domainEventA", ([FromServices] IMediator mediator) =>
     {
@@ -60,4 +62,7 @@ app.MapGet("/domainEventD", async ([FromServices] IMediator mediator, DatabaseCo
 app.Run();
 
 
-public partial class Program { }
+namespace Udup.WebApp
+{
+    public partial class Program { }
+}
