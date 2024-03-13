@@ -8,6 +8,7 @@ namespace Udup.Core;
 public class UdupUiMiddleware
 {
     private readonly RequestDelegate next;
+    private readonly Gatherer gatherer = new();
 
     public UdupUiMiddleware(
         RequestDelegate next)
@@ -22,7 +23,7 @@ public class UdupUiMiddleware
             
         if (httpMethod == "GET" && path.EndsWith("udup.json"))
         {
-            var result = await new Gatherer().Gather();
+            var result = await gatherer.Gather();
             var json = JsonSerializer.Serialize(result);
             await context.Response.WriteAsync(json);
             return;
@@ -48,7 +49,7 @@ public class UdupUiMiddleware
             // Inject arguments before writing to response
             var htmlBuilder = new StringBuilder(await reader.ReadToEndAsync());
             
-            var result = await new Gatherer().Gather();
+            var result = await gatherer.Gather();
 
             var graph = GraphBuilder.Build(result);
             
