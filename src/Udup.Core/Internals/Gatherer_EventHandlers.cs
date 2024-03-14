@@ -1,8 +1,10 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Udup.Abstractions;
+using EventHandler = Udup.Abstractions.EventHandler;
 
-namespace Udup.Core.Roslyn.Internals;
+namespace Udup.Core.Internals;
 
 internal class Gatherer_EventHandlers
 {

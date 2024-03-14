@@ -1,10 +1,9 @@
 ﻿using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Udup.Abstractions;
 
-namespace Udup.Core.Roslyn.Internals;
-
-public record EventTrace(IdAndName Event, IdAndName Name);
+namespace Udup.Core.Internals;
 
 public class Gatherer_EventTraces
 {

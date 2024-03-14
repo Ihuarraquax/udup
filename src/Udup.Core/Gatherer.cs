@@ -1,15 +1,20 @@
 ﻿using Microsoft.Build.Locator;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.MSBuild;
-using Udup.Core.Roslyn.Internals;
+using Udup.Abstractions;
+using Udup.Core.Internals;
+using EventHandler = Udup.Abstractions.EventHandler;
 
-namespace Udup.Core.Roslyn;
+namespace Udup.Core;
 
 public class Gatherer
 {
+    private readonly string solutionPath;
     private readonly MSBuildWorkspace workspace;
 
-    public Gatherer()
+    public Gatherer(string solutionPath)
     {
+        this.solutionPath = solutionPath;
         MSBuildLocator.RegisterDefaults();
 
         workspace = MSBuildWorkspace.Create();
@@ -21,7 +26,7 @@ public class Gatherer
 
     public async Task<UdupResponse> Gather()
     {
-        var solution = await workspace.OpenSolutionAsync(@"C:\P\Edu\udup\Udup.sln");
+        var solution = await OpenSolutionAsync();
 
         var events = await Gatherer_Events.GatherEvents(solution);
         var eventHandlers = await Gatherer_EventHandlers.GetEventHandlers(solution);
@@ -36,22 +41,27 @@ public class Gatherer
     
     public async Task<List<IdAndName>> GatherEvents()
     {
-        var solution = await workspace.OpenSolutionAsync(@"C:\P\Edu\udup\Udup.sln");
+        var solution = await OpenSolutionAsync();
 
         return await Gatherer_Events.GatherEvents(solution);
     }
-    
+
     public async Task<List<EventTrace>> GatherEventTraces()
     {
-        var solution = await workspace.OpenSolutionAsync(@"C:\P\Edu\udup\Udup.sln");
+        var solution = await OpenSolutionAsync();
 
         return await Gatherer_EventTraces.GatherEventsTraces(solution);
     }
 
     public async Task<List<EventHandler>> GatherEventHandlers()
     {
-        var solution = await workspace.OpenSolutionAsync(@"C:\P\Edu\udup\Udup.sln");
+        var solution = await OpenSolutionAsync();
 
         return await Gatherer_EventHandlers.GetEventHandlers(solution);
+    }
+    
+    private async Task<Solution> OpenSolutionAsync()
+    {
+        return await workspace.OpenSolutionAsync(solutionPath);
     }
 }

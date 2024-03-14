@@ -1,14 +1,13 @@
 ﻿using System.Text;
 using System.Text.Json;
 using Microsoft.AspNetCore.Http;
-using Udup.Core.Roslyn;
+using Udup.Abstractions;
 
-namespace Udup.Core;
+namespace Udup.AspNet;
 
 public class UdupUiMiddleware
 {
     private readonly RequestDelegate next;
-    private readonly Gatherer gatherer = new();
 
     public UdupUiMiddleware(
         RequestDelegate next)
@@ -23,8 +22,9 @@ public class UdupUiMiddleware
             
         if (httpMethod == "GET" && path.EndsWith("udup.json"))
         {
-            var result = await gatherer.Gather();
-            var json = JsonSerializer.Serialize(result);
+            // var result = await gatherer.Gather();
+            using var reader = new StreamReader("Udup.json");
+            var json = await reader.ReadToEndAsync();
             await context.Response.WriteAsync(json);
             return;
         }
@@ -44,15 +44,20 @@ public class UdupUiMiddleware
 
         using (var stream = typeof(UdupUiMiddleware).Assembly.GetManifestResourceStream($"{typeof(UdupUiMiddleware).Namespace}.index.html"))
         {
-            using var reader = new StreamReader(stream);
+            using var htmlReader = new StreamReader(stream);
 
             // Inject arguments before writing to response
-            var htmlBuilder = new StringBuilder(await reader.ReadToEndAsync());
-            
-            var result = await gatherer.Gather();
+            var htmlBuilder = new StringBuilder(await htmlReader.ReadToEndAsync());
 
-            var graph = GraphBuilder.Build(result);
-            
+            string graph;
+            using var jsonReader = new StreamReader("Udup.json");
+            {
+                var json = await jsonReader.ReadToEndAsync();
+                var result = JsonSerializer.Deserialize<UdupResponse>(json);
+
+                graph = GraphBuilder.Build(result);
+            }
+
             htmlBuilder.Replace("__Graph__", graph);
             await response.WriteAsync(htmlBuilder.ToString(), Encoding.UTF8);
         }

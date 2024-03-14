@@ -1,14 +1,14 @@
-﻿using Udup.Core.Roslyn;
+﻿using Udup.Core;
 
 namespace RoslynPlayground;
 
-public class RoslynPlayground : IClassFixture<Gatherer>
+public class RoslynPlayground : IClassFixture<GathererFixture>
 {
     private readonly Gatherer gatherer;
 
-    public RoslynPlayground(Gatherer gatherer)
+    public RoslynPlayground(GathererFixture gathererFixture)
     {
-        this.gatherer = gatherer;
+        this.gatherer = gathererFixture.Instance;
     }
 
     [Fact]
@@ -46,4 +46,9 @@ public class RoslynPlayground : IClassFixture<Gatherer>
         // Assert
         await Verify(eventHandlers);
     }
+}
+
+public class GathererFixture
+{
+    public readonly Gatherer Instance = new(@"C:\P\Edu\udup\Udup.sln");
 }

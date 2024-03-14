@@ -1,6 +1,7 @@
 ﻿using System.Text;
+using Udup.Abstractions;
 
-namespace Udup.Core;
+namespace Udup.AspNet;
 
 internal static class GraphBuilder
 {

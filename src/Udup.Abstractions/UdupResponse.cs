@@ -1,10 +1,11 @@
-﻿using Udup.Core.Roslyn.Internals;
-
-namespace Udup.Core;
+﻿
+namespace Udup.Abstractions;
 
 public record UdupResponse(List<IdAndName> Events, List<EventHandler> Handlers, List<EventTrace> Traces);
 
 public record EventHandler(IdAndName Handler, IdAndName[] Events);
+
+public record EventTrace(IdAndName Event, IdAndName Name);
 
 public class IdAndName
 {

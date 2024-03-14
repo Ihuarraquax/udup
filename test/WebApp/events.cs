@@ -1,5 +1,5 @@
 using MediatR;
-using Udup.Core;
+using Udup.Abstractions;
 
 namespace Udup.WebApp;
 

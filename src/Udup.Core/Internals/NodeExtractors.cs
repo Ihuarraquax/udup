@@ -1,7 +1,8 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Udup.Abstractions;
 
-namespace Udup.Core.Roslyn.Internals;
+namespace Udup.Core.Internals;
 
 public static class NodeExtractors
 {

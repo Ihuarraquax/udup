@@ -132,8 +132,8 @@
         Name: DomainEventAHappened
       },
       Name: {
-        Id: creation1024e1050,
-        Name: EndpointTODOs924e1081
+        Id: creation1026e1052,
+        Name: EndpointTODOs926e1083
       }
     },
     {
@@ -142,8 +142,8 @@
         Name: DomainEventCHappened
       },
       Name: {
-        Id: creation1395e1421,
-        Name: EndpointTODOs1228e1524
+        Id: creation1397e1423,
+        Name: EndpointTODOs1230e1526
       }
     }
   ]
