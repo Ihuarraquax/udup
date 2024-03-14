@@ -1,12 +1,12 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApp", "WebApp\WebApp.csproj", "{CB98EE5D-316D-4A2A-AD95-7EE3493AC442}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApp", "test\WebApp\WebApp.csproj", "{CB98EE5D-316D-4A2A-AD95-7EE3493AC442}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UdupTests.AspNet", "UdupTests.AspNet\UdupTests.AspNet.csproj", "{2912AF6C-5F89-4629-ADCC-05665F11672F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UdupTests.AspNet", "test\UdupTests.AspNet\UdupTests.AspNet.csproj", "{2912AF6C-5F89-4629-ADCC-05665F11672F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Udup.Core", "Udup.Core\Udup.Core.csproj", "{5AB8D637-D818-4AEC-A1E9-3922950BAB83}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Udup.Core", "src\Udup.Core\Udup.Core.csproj", "{5AB8D637-D818-4AEC-A1E9-3922950BAB83}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoslynPlayground", "RoslynPlayground\RoslynPlayground.csproj", "{AEBBE349-6460-41CF-B863-328F997EF4F0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoslynPlayground", "test\RoslynPlayground\RoslynPlayground.csproj", "{AEBBE349-6460-41CF-B863-328F997EF4F0}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{07C4D153-13FF-437D-998A-0567ED727328}"
 EndProject

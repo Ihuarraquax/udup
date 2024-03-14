@@ -30,11 +30,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Udup.Core\Udup.Core.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="RoslynSources\" />
+      <ProjectReference Include="..\..\src\Udup.Core\Udup.Core.csproj" />
     </ItemGroup>
 
 </Project>

@@ -23,7 +23,7 @@
     </ItemGroup>
     
     <ItemGroup>
-      <ProjectReference Include="..\Udup.Core\Udup.Core.csproj" />
+      <ProjectReference Include="..\..\src\Udup.Core\Udup.Core.csproj" />
     </ItemGroup>
 
 </Project>
