@@ -7,30 +7,11 @@ namespace Udup.Core.Internals;
 
 public class Gatherer_EventTraces
 {
-    internal static async Task<List<EventTrace>> GatherEventsTraces(Solution solution)
+    public static async Task<List<EventTrace>> Get(SyntaxTree tree, SemanticModel? semanticModel)
     {
-        var eventTraces = new List<EventTrace>();
-        foreach (var project in solution.Projects)
-        {
-            var compilation = await project.GetCompilationAsync();
-
-            foreach (var document in project.Documents)
-            {
-                eventTraces.AddRange(await GetEventTraces(compilation, document));
-            }
-        }
-
-        return eventTraces;
-    }
-
-    internal static async Task<List<EventTrace>> GetEventTraces(Compilation? compilation,
-        Document document)
-    {
-        var tree = await document.GetSyntaxTreeAsync();
         var root = await tree.GetRootAsync();
-        var semanticModel = compilation.GetSemanticModel(tree);
 
-        var result = root.DescendantNodes().OfType<ObjectCreationExpressionSyntax>()
+        ObjectCreationExpressionSyntax?[] result = root.DescendantNodes().OfType<ObjectCreationExpressionSyntax>()
             .Where(_ => semanticModel.GetSymbolInfo(_).Symbol.ContainingType.IsUdupEvent())
             .ToArray();
 
@@ -46,7 +27,7 @@ public class Gatherer_EventTraces
         return list;
     }
 
-    internal static string BuildPath(SyntaxNode node, SemanticModel semanticModel)
+    internal static string BuildPath(SyntaxNode? node, SemanticModel semanticModel)
     {
         var stringBuilder = new StringBuilder();
 

@@ -2,11 +2,11 @@
 
 namespace RoslynPlayground;
 
-public class RoslynPlayground : IClassFixture<GathererFixture>
+public class GathererTests : IClassFixture<GathererFixture>
 {
     private readonly Gatherer gatherer;
 
-    public RoslynPlayground(GathererFixture gathererFixture)
+    public GathererTests(GathererFixture gathererFixture)
     {
         this.gatherer = gathererFixture.Instance;
     }

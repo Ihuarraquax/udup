@@ -1,6 +1,7 @@
 ﻿using Microsoft.Build.Locator;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.MSBuild;
+using NuGet.Packaging;
 using Udup.Abstractions;
 using Udup.Core.Internals;
 using EventHandler = Udup.Abstractions.EventHandler;
@@ -28,9 +29,23 @@ public class Gatherer
     {
         var solution = await OpenSolutionAsync();
 
-        var events = await Gatherer_Events.GatherEvents(solution);
-        var eventHandlers = await Gatherer_EventHandlers.GetEventHandlers(solution);
-        var eventTraces = await Gatherer_EventTraces.GatherEventsTraces(solution);
+        var events = new List<IdAndName>();
+        var eventHandlers = new List<EventHandler>();
+        var eventTraces = new List<EventTrace>();
+
+        foreach (var project in solution.Projects)
+        {
+            var compilation = await project.GetCompilationAsync();
+
+            foreach (var document in project.Documents)
+            {
+                var tree = await document.GetSyntaxTreeAsync();
+                var semanticModel = compilation.GetSemanticModel(tree);
+                events.AddRange(await Gatherer_Events.Get(tree, semanticModel));
+                eventHandlers.AddRange(await Gatherer_EventHandlers.Get(tree, semanticModel));
+                eventTraces.AddRange(await Gatherer_EventTraces.Get(tree, semanticModel));
+            }
+        }
 
         return new UdupResponse(
             events,
@@ -38,30 +53,69 @@ public class Gatherer
             eventTraces
         );
     }
-    
+
     public async Task<List<IdAndName>> GatherEvents()
     {
         var solution = await OpenSolutionAsync();
 
-        return await Gatherer_Events.GatherEvents(solution);
+        var events = new List<IdAndName>();
+
+        await IterateThroughProjectsAndDocuments(solution,
+            async (tree, semanticModel) =>
+            {
+                events.AddRange(await Gatherer_Events.Get(tree, semanticModel));
+            });
+
+        return events;
     }
 
     public async Task<List<EventTrace>> GatherEventTraces()
     {
         var solution = await OpenSolutionAsync();
 
-        return await Gatherer_EventTraces.GatherEventsTraces(solution);
+        var eventTraces = new List<EventTrace>();
+        
+        await IterateThroughProjectsAndDocuments(solution,
+            async (tree, semanticModel) =>
+            {
+                eventTraces.AddRange(await Gatherer_EventTraces.Get(tree, semanticModel));
+            });
+        
+        return eventTraces;
     }
 
     public async Task<List<EventHandler>> GatherEventHandlers()
     {
         var solution = await OpenSolutionAsync();
 
-        return await Gatherer_EventHandlers.GetEventHandlers(solution);
+        var eventHandlers = new List<EventHandler>();
+
+        await IterateThroughProjectsAndDocuments(solution,
+            async (tree, semanticModel) =>
+            {
+                eventHandlers.AddRange(await Gatherer_EventHandlers.Get(tree, semanticModel));
+            });
+        return eventHandlers;
     }
-    
+
     private async Task<Solution> OpenSolutionAsync()
     {
         return await workspace.OpenSolutionAsync(solutionPath);
+    }
+    
+    private async Task IterateThroughProjectsAndDocuments(Solution solution, Func<SyntaxTree, SemanticModel, Task> func)
+    {
+        foreach (var project in solution.Projects)
+        {
+            var compilation = await project.GetCompilationAsync();
+
+            foreach (var document in project.Documents)
+            {
+                var tree = await document.GetSyntaxTreeAsync();
+                var semanticModel = compilation.GetSemanticModel(tree);
+
+                await func.Invoke(tree, semanticModel);
+            }
+        }
     }
 }

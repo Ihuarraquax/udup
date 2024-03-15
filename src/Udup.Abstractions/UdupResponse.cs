@@ -5,7 +5,7 @@ public record UdupResponse(List<IdAndName> Events, List<EventHandler> Handlers, 
 
 public record EventHandler(IdAndName Handler, IdAndName[] Events);
 
-public record EventTrace(IdAndName Event, IdAndName Name);
+public record EventTrace(IdAndName Event, IdAndName Trace);
 
 public class IdAndName
 {

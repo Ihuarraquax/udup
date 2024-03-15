@@ -4,7 +4,7 @@
       Id: DomainEventBHappened,
       Name: DomainEventBHappened
     },
-    Name: {
+    Trace: {
       Id: creation413e439,
       Name: Controller.MakeActionBControllerMethod()
     }
@@ -14,7 +14,7 @@
       Id: DomainEventDHappened,
       Name: DomainEventDHappened
     },
-    Name: {
+    Trace: {
       Id: creation567e593,
       Name: Sample.MakeActionD()
     }
@@ -24,7 +24,7 @@
       Id: DomainEventBHappened,
       Name: DomainEventBHappened
     },
-    Name: {
+    Trace: {
       Id: creation381e407,
       Name: DomainEventBService.SendBEvent()
     }
@@ -34,7 +34,7 @@
       Id: DomainEventAHappened,
       Name: DomainEventAHappened
     },
-    Name: {
+    Trace: {
       Id: creation1026e1052,
       Name: EndpointTODOs926e1083
     }
@@ -44,7 +44,7 @@
       Id: DomainEventCHappened,
       Name: DomainEventCHappened
     },
-    Name: {
+    Trace: {
       Id: creation1397e1423,
       Name: EndpointTODOs1230e1526
     }

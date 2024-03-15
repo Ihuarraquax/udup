@@ -26,8 +26,8 @@ internal static class GraphBuilder
 
         foreach (var trace in result.Traces)
         {
-            graphBuilder.AppendLine($"{trace.Name.Id}[\"{trace.Name.Name}\"]");
-            graphBuilder.AppendLine($"{trace.Name.Id} --> {trace.Event.Id}");
+            graphBuilder.AppendLine($"{trace.Trace.Id}[\"{trace.Trace.Name}\"]");
+            graphBuilder.AppendLine($"{trace.Trace.Id} --> {trace.Event.Id}");
         }
 
         return graphBuilder.ToString();

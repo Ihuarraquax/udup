@@ -100,50 +100,30 @@
       Event: {
         Id: DomainEventBHappened,
         Name: DomainEventBHappened
-      },
-      Name: {
-        Id: creation413e439,
-        Name: Controller.MakeActionBControllerMethod()
       }
     },
     {
       Event: {
         Id: DomainEventDHappened,
         Name: DomainEventDHappened
-      },
-      Name: {
-        Id: creation567e593,
-        Name: Sample.MakeActionD()
       }
     },
     {
       Event: {
         Id: DomainEventBHappened,
         Name: DomainEventBHappened
-      },
-      Name: {
-        Id: creation381e407,
-        Name: DomainEventBService.SendBEvent()
       }
     },
     {
       Event: {
         Id: DomainEventAHappened,
         Name: DomainEventAHappened
-      },
-      Name: {
-        Id: creation1026e1052,
-        Name: EndpointTODOs926e1083
       }
     },
     {
       Event: {
         Id: DomainEventCHappened,
         Name: DomainEventCHappened
-      },
-      Name: {
-        Id: creation1397e1423,
-        Name: EndpointTODOs1230e1526
       }
     }
   ]

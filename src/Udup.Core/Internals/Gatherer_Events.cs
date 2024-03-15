@@ -7,27 +7,9 @@ namespace Udup.Core.Internals;
 
 internal class Gatherer_Events
 {
-    internal static async Task<List<IdAndName>> GatherEvents(Solution solution)
+    public static async Task<IdAndName[]> Get(SyntaxTree tree, SemanticModel? semanticModel)
     {
-        var events = new List<IdAndName>();
-        foreach (var project in solution.Projects)
-        {
-            var compilation = await project.GetCompilationAsync();
-
-            foreach (var document in project.Documents)
-            {
-                events.AddRange(await GetEventsFromSyntaxAndSemantic(compilation, document));
-            }
-        }
-
-        return events;
-    }
-
-    public static async Task<IdAndName[]> GetEventsFromSyntaxAndSemantic(Compilation? compilation, Document document)
-    {
-        var tree = await document.GetSyntaxTreeAsync();
         var root = tree.GetRoot();
-        var semanticModel = compilation.GetSemanticModel(tree);
 
         return root.DescendantNodes().OfType<BaseTypeDeclarationSyntax>()
             .Select(syntax => semanticModel.GetDeclaredSymbol(syntax))

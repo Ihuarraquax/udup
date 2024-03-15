@@ -17,7 +17,7 @@ public static class NodeExtractors
             @interface.GetFullName() == $"{typeof(IUdupMessage).FullName}");
     }
     
-    internal static string CreateIdentifier(this ObjectCreationExpressionSyntax node)
+    internal static string CreateIdentifier(this ObjectCreationExpressionSyntax? node)
     {
         return $"creation{node.Span.Start}e{node.Span.End}";
     }
