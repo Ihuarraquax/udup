@@ -1,5 +1,8 @@
 using MediatR;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Udup.AspNet;
 using Udup.WebApp;
 using Udup.WebApp.EF;
@@ -30,7 +33,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.MapDomainEventAEndpointsWithService();
+app.MapDomainEventBEndpointsWithService();
 
 app.MapGet("/domainEventA", ([FromServices] IMediator mediator) =>
     {

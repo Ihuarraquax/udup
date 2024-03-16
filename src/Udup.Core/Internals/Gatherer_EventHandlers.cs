@@ -18,7 +18,7 @@ internal class Gatherer_EventHandlers
             .Where(symbol => symbol!.IsImplicitlyDeclared is false)
             .Where(IsUdupEventHandler)
             .Select(_ => new EventHandler(new(_.Name), _.Interfaces
-                .Where(@interface => @interface.GetFullName() == $"{typeof(IUdupHandler).FullName}")
+                .Where(@interface => @interface.ToDisplayString() == $"{typeof(IUdupHandler).FullName}")
                 .Select(_ => new IdAndName(_.TypeArguments.First().Name))
                 .ToArray()))
             .ToArray();
@@ -27,7 +27,7 @@ internal class Gatherer_EventHandlers
     private static bool IsUdupEventHandler(INamedTypeSymbol symbol)
     {
         return symbol.Interfaces
-            .Where(@interface => @interface.GetFullName() == $"{typeof(IUdupHandler).FullName}")
+            .Where(@interface => @interface.ToDisplayString() == $"{typeof(IUdupHandler).FullName}")
             .Any(@interface => @interface.IsGenericType);
     }
 }

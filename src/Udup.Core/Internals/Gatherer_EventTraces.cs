@@ -35,6 +35,25 @@ public class Gatherer_EventTraces
         {
             return "";
         }
+        
+        if (node is InvocationExpressionSyntax invocation)
+        {
+            if(invocation.Expression is MemberAccessExpressionSyntax memberAccess)
+            {
+                if (memberAccess.Expression is IdentifierNameSyntax identifierName)
+                {
+                    var symbol = semanticModel.GetSymbolInfo(identifierName);
+                    if (symbol.IsWebApplication())
+                    {
+                        var method = memberAccess.Name.Identifier.Text.ToHttpMethod();
+                        var path  = invocation.ArgumentList.Arguments[0].Expression.ToString();
+                        
+                        stringBuilder.Append($"{method} {path}");
+                        return stringBuilder.ToString();
+                    }
+                }
+            }
+        }
 
         stringBuilder.Append(BuildPath(node.Parent, semanticModel));
 
