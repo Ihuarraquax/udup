@@ -8,6 +8,9 @@ namespace Udup.Core.Internals;
 
 internal class Gatherer_EventHandlers
 {
+    private static readonly SymbolDisplayFormat DisplayFormat =
+        new(typeQualificationStyle: SymbolDisplayTypeQualificationStyle.NameAndContainingTypesAndNamespaces,
+            genericsOptions: SymbolDisplayGenericsOptions.None);
     public static async Task<EventHandler[]> Get(SyntaxTree tree, SemanticModel? semanticModel)
     {
         var root = tree.GetRoot();
@@ -18,7 +21,7 @@ internal class Gatherer_EventHandlers
             .Where(symbol => symbol!.IsImplicitlyDeclared is false)
             .Where(IsUdupEventHandler)
             .Select(_ => new EventHandler(new(_.Name), _.Interfaces
-                .Where(@interface => @interface.ToDisplayString() == $"{typeof(IUdupHandler).FullName}")
+                .Where(@interface => @interface.ToDisplayString(DisplayFormat) == $"{typeof(IUdupHandler).FullName}")
                 .Select(_ => new IdAndName(_.TypeArguments.First().Name))
                 .ToArray()))
             .ToArray();
@@ -27,7 +30,7 @@ internal class Gatherer_EventHandlers
     private static bool IsUdupEventHandler(INamedTypeSymbol symbol)
     {
         return symbol.Interfaces
-            .Where(@interface => @interface.ToDisplayString() == $"{typeof(IUdupHandler).FullName}")
+            .Where(@interface => @interface.ToDisplayString(DisplayFormat) == $"{typeof(IUdupHandler).FullName}")
             .Any(@interface => @interface.IsGenericType);
     }
 }

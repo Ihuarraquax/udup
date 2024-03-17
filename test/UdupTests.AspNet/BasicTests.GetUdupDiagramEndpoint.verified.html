@@ -23,16 +23,18 @@ DomainEventAHappened(("DomainEventAHappened"))
 DomainEventBHappened(("DomainEventBHappened"))
 DomainEventCHappened(("DomainEventCHappened"))
 DomainEventDHappened(("DomainEventDHappened"))
-creation413e439["Controller.MakeActionBControllerMethod()"]
-creation413e439 --> DomainEventBHappened
-creation567e593["Sample.MakeActionD()"]
-creation567e593 --> DomainEventDHappened
-creation381e407["DomainEventBService.SendBEvent()"]
-creation381e407 --> DomainEventBHappened
-creation1026e1052["EndpointTODOs926e1083"]
-creation1026e1052 --> DomainEventAHappened
-creation1397e1423["EndpointTODOs1230e1526"]
-creation1397e1423 --> DomainEventCHappened
+creation469e495["Controller.MakeActionBControllerMethod()"]
+creation469e495 --> DomainEventBHappened
+creation617e643["Sample.MakeActionD()"]
+creation617e643 --> DomainEventDHappened
+creation664e690["GET "/domainEventA""]
+creation664e690 --> DomainEventAHappened
+creation412e438["DomainEventBService.SendBEvent()"]
+creation412e438 --> DomainEventBHappened
+creation1149e1175["GET "/domainEventA""]
+creation1149e1175 --> DomainEventAHappened
+creation1520e1546["GET "/domainEventC""]
+creation1520e1546 --> DomainEventCHappened
 
 </pre>
 

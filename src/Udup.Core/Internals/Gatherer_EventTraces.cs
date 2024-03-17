@@ -21,59 +21,80 @@ public class Gatherer_EventTraces
             var stringBuilder = BuildPath(node, semanticModel);
 
             list.Add(new EventTrace(new IdAndName(semanticModel.GetSymbolInfo(node).Symbol.ContainingType.Name),
-                new IdAndName(node.CreateIdentifier(), stringBuilder)));
+                new IdAndName(CreateIdentifier(node), stringBuilder)));
         }
 
         return list;
     }
 
-    internal static string BuildPath(SyntaxNode? node, SemanticModel semanticModel)
+    private static string BuildPath(SyntaxNode? node, SemanticModel semanticModel)
     {
         var stringBuilder = new StringBuilder();
 
-        if (node is null)
+        switch (node)
         {
-            return "";
-        }
-        
-        if (node is InvocationExpressionSyntax invocation)
-        {
-            if(invocation.Expression is MemberAccessExpressionSyntax memberAccess)
+            case null:
+                return "";
+            case InvocationExpressionSyntax { Expression: MemberAccessExpressionSyntax { Expression: IdentifierNameSyntax identifierName } memberAccess } invocation:
             {
-                if (memberAccess.Expression is IdentifierNameSyntax identifierName)
+                var symbol = semanticModel.GetSymbolInfo(identifierName);
+                if (IsWebApplication(symbol))
                 {
-                    var symbol = semanticModel.GetSymbolInfo(identifierName);
-                    if (symbol.IsWebApplication())
-                    {
-                        var method = memberAccess.Name.Identifier.Text.ToHttpMethod();
-                        var path  = invocation.ArgumentList.Arguments[0].Expression.ToString();
+                    var method = ToHttpMethod(memberAccess.Name.Identifier.Text);
+                    var path  = invocation.ArgumentList.Arguments[0].Expression.ToString();
                         
-                        stringBuilder.Append($"{method} {path}");
-                        return stringBuilder.ToString();
-                    }
+                    stringBuilder.Append($"{method} {path}");
+                    return stringBuilder.ToString();
                 }
+
+                break;
             }
         }
 
         stringBuilder.Append(BuildPath(node.Parent, semanticModel));
 
-        if (node is MethodDeclarationSyntax methodDeclaration)
+        switch (node)
         {
-            stringBuilder.Append(methodDeclaration.Identifier.Text);
-            stringBuilder.Append("()");
-        }
-
-        if (node is BaseTypeDeclarationSyntax typeDeclaration)
-        {
-            stringBuilder.Append(typeDeclaration.Identifier.Text);
-            stringBuilder.Append(".");
-        }
-
-        if (node is GlobalStatementSyntax expression)
-        {
-            stringBuilder.Append($"EndpointTODOs{expression.Span.Start}e{expression.Span.End}");
+            case MethodDeclarationSyntax methodDeclaration:
+                stringBuilder.Append(methodDeclaration.Identifier.Text);
+                stringBuilder.Append("()");
+                break;
+            case BaseTypeDeclarationSyntax typeDeclaration:
+                stringBuilder.Append(typeDeclaration.Identifier.Text);
+                stringBuilder.Append('.');
+                break;
         }
 
         return stringBuilder.ToString();
+    }
+
+    private static bool IsWebApplication(SymbolInfo node)
+    {
+        return node.Symbol switch
+        {
+            IParameterSymbol parameter => parameter.Type.ToDisplayString() ==
+                                          "Microsoft.AspNetCore.Builder.WebApplication",
+            ILocalSymbol local => local.Type.ToDisplayString() ==
+                                  "Microsoft.AspNetCore.Builder.WebApplication?",
+            _ => false
+        };
+    }
+
+    private static string CreateIdentifier(ObjectCreationExpressionSyntax? node)
+    {
+        return $"creation{node.Span.Start}e{node.Span.End}";
+    }
+
+    private static string ToHttpMethod(string text)
+    {
+        return text switch
+        {
+            "MapGet" => "GET",
+            "MapPost" => "POST",
+            "MapPut" => "PUT",
+            "MapDelete" => "DELETE",
+            "MapPatch" => "PATCH",
+            _ => "UNKNOWN"
+        };
     }
 }

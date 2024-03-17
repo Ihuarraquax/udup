@@ -100,30 +100,60 @@
       Event: {
         Id: DomainEventBHappened,
         Name: DomainEventBHappened
+      },
+      Trace: {
+        Id: creation469e495,
+        Name: Controller.MakeActionBControllerMethod()
       }
     },
     {
       Event: {
         Id: DomainEventDHappened,
         Name: DomainEventDHappened
-      }
-    },
-    {
-      Event: {
-        Id: DomainEventBHappened,
-        Name: DomainEventBHappened
+      },
+      Trace: {
+        Id: creation617e643,
+        Name: Sample.MakeActionD()
       }
     },
     {
       Event: {
         Id: DomainEventAHappened,
         Name: DomainEventAHappened
+      },
+      Trace: {
+        Id: creation664e690,
+        Name: GET "/domainEventA"
+      }
+    },
+    {
+      Event: {
+        Id: DomainEventBHappened,
+        Name: DomainEventBHappened
+      },
+      Trace: {
+        Id: creation412e438,
+        Name: DomainEventBService.SendBEvent()
+      }
+    },
+    {
+      Event: {
+        Id: DomainEventAHappened,
+        Name: DomainEventAHappened
+      },
+      Trace: {
+        Id: creation1149e1175,
+        Name: GET "/domainEventA"
       }
     },
     {
       Event: {
         Id: DomainEventCHappened,
         Name: DomainEventCHappened
+      },
+      Trace: {
+        Id: creation1520e1546,
+        Name: GET "/domainEventC"
       }
     }
   ]

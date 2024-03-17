@@ -46,7 +46,7 @@
     },
     Trace: {
       Id: creation1149e1175,
-      Name: EndpointTODOs1049e1206
+      Name: GET "/domainEventA"
     }
   },
   {
@@ -56,7 +56,7 @@
     },
     Trace: {
       Id: creation1520e1546,
-      Name: EndpointTODOs1353e1649
+      Name: GET "/domainEventC"
     }
   }
 ]
