@@ -41,8 +41,11 @@ public class Gatherer
             {
                 var tree = await document.GetSyntaxTreeAsync();
                 var semanticModel = compilation.GetSemanticModel(tree);
+
+                var eventHandlerWalker = new Gatherer_EventHandlers(semanticModel);
+                
                 events.AddRange(await Gatherer_Events.Get(tree, semanticModel));
-                eventHandlers.AddRange(await Gatherer_EventHandlers.Get(tree, semanticModel));
+                eventHandlers.AddRange(eventHandlerWalker.GetWithWalker(tree));
                 eventTraces.AddRange(await Gatherer_EventTraces.Get(tree, semanticModel));
             }
         }
@@ -90,11 +93,20 @@ public class Gatherer
 
         var eventHandlers = new List<EventHandler>();
 
-        await IterateThroughProjectsAndDocuments(solution,
-            async (tree, semanticModel) =>
+        foreach (var project in solution.Projects)
+        {
+            var compilation = await project.GetCompilationAsync();
+
+            foreach (var document in project.Documents)
             {
-                eventHandlers.AddRange(await Gatherer_EventHandlers.Get(tree, semanticModel));
-            });
+                var tree = await document.GetSyntaxTreeAsync();
+                var semanticModel = compilation.GetSemanticModel(tree);
+
+                var walker = new Gatherer_EventHandlers(semanticModel);
+                walker.Visit(await tree.GetRootAsync());
+                eventHandlers.AddRange(walker.eventHandlers);
+            }
+        }
         return eventHandlers;
     }
 
