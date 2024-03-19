@@ -5,32 +5,35 @@
         <Nullable>enable</Nullable>
         <RootNamespace>Udup.WebApp</RootNamespace>
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+        <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
     </PropertyGroup>
-    
+
     <ItemGroup>
-        <InternalsVisibleTo Include="WebAppTests" />
+        <InternalsVisibleTo Include="WebAppTests"/>
     </ItemGroup>
-    
+
     <ItemGroup>
-        <PackageReference Include="MediatR" Version="12.2.0" />
+        <PackageReference Include="MediatR" Version="12.2.0"/>
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.2"/>
-        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.2" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.2"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.2">
-          <PrivateAssets>all</PrivateAssets>
-          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0"/>
     </ItemGroup>
-    
+
     <ItemGroup>
-      <Content Include="..\..\.dockerignore">
-        <Link>.dockerignore</Link>
-      </Content>
+        <Content Include="..\..\.dockerignore">
+            <Link>.dockerignore</Link>
+        </Content>
     </ItemGroup>
-    
+
     <ItemGroup>
-      <ProjectReference Include="..\..\src\Udup.Abstractions\Udup.Abstractions.csproj" />
-      <ProjectReference Include="..\..\src\Udup.AspNet\Udup.AspNet.csproj" />
+        <ProjectReference Include="..\..\src\Udup.AspNet\Udup.AspNet.csproj"/>
+        <ProjectReference Include="..\..\src\Udup.Core\Udup.Core.csproj" />
+        <ProjectReference Include="..\..\src\Udup.SourceGenerators\Udup.SourceGenerators.csproj" OutputItemType="Analyzer"
+                          ReferenceOutputAssembly="false"/>
     </ItemGroup>
 
 </Project>

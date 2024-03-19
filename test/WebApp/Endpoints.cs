@@ -22,6 +22,7 @@ public static class Endpoints
     {
         app.MapGet("/domainEventA", ([FromServices] IMediator mediator) =>
         {
+            var json = StaticUdupResponse.UdupJson;
             mediator.Publish(new DomainEventAHappened());
         });
         

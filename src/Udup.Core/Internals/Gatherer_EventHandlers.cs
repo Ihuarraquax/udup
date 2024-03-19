@@ -6,7 +6,7 @@ using EventHandler = Udup.Abstractions.EventHandler;
 
 namespace Udup.Core.Internals;
 
-internal class Gatherer_EventHandlers : CSharpSyntaxWalker
+public class Gatherer_EventHandlers : CSharpSyntaxWalker
 {
     private readonly SemanticModel? semanticModel;
 
