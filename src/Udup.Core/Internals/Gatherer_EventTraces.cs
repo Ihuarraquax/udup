@@ -1,30 +1,36 @@
 ﻿using System.Text;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Udup.Abstractions;
 
 namespace Udup.Core.Internals;
 
-public class Gatherer_EventTraces
+public class Gatherer_EventTraces : CSharpSyntaxWalker
 {
-    public static async Task<List<EventTrace>> Get(SyntaxTree tree, SemanticModel? semanticModel)
+    private readonly SemanticModel semanticModel;
+    public readonly List<EventTrace> EventTraces = [];
+
+    public Gatherer_EventTraces(SemanticModel semanticModel)
     {
-        var root = await tree.GetRootAsync();
+        this.semanticModel = semanticModel;
+    }
 
-        ObjectCreationExpressionSyntax?[] result = root.DescendantNodes().OfType<ObjectCreationExpressionSyntax>()
-            .Where(_ => semanticModel.GetSymbolInfo(_).Symbol.ContainingType.IsUdupEvent())
-            .ToArray();
+    public override void VisitObjectCreationExpression(ObjectCreationExpressionSyntax node)
+    {
+        Process(node);
+    }
 
-        var list = new List<EventTrace>();
-        foreach (var node in result)
-        {
-            var stringBuilder = BuildPath(node, semanticModel);
-
-            list.Add(new EventTrace(new IdAndName(semanticModel.GetSymbolInfo(node).Symbol.ContainingType.Name),
-                new IdAndName(CreateIdentifier(node), stringBuilder)));
-        }
-
-        return list;
+    private void Process(ObjectCreationExpressionSyntax node)
+    {
+        var symbol = semanticModel.GetSymbolInfo(node).Symbol;
+        if (symbol is null) return;
+        if (symbol.ContainingType.IsUdupEvent() is false) return;
+        
+        var stringBuilder = BuildPath(node, semanticModel);
+        EventTraces.Add(new EventTrace(
+            new IdAndName(symbol.ContainingType.Name),
+            new IdAndName(CreateIdentifier(node), stringBuilder)));
     }
 
     private static string BuildPath(SyntaxNode? node, SemanticModel semanticModel)
@@ -35,14 +41,20 @@ public class Gatherer_EventTraces
         {
             case null:
                 return "";
-            case InvocationExpressionSyntax { Expression: MemberAccessExpressionSyntax { Expression: IdentifierNameSyntax identifierName } memberAccess } invocation:
+            case InvocationExpressionSyntax
             {
-                var symbol = semanticModel.GetSymbolInfo(identifierName);
+                Expression: MemberAccessExpressionSyntax
+                {
+                    Expression: IdentifierNameSyntax identifierName
+                } memberAccess
+            } invocation:
+            {
+                var symbol = ModelExtensions.GetSymbolInfo(semanticModel, identifierName);
                 if (IsWebApplication(symbol))
                 {
                     var method = ToHttpMethod(memberAccess.Name.Identifier.Text);
-                    var path  = invocation.ArgumentList.Arguments[0].Expression.ToString();
-                        
+                    var path = invocation.ArgumentList.Arguments[0].Expression.ToString();
+
                     stringBuilder.Append($"{method} {path}");
                     return stringBuilder.ToString();
                 }

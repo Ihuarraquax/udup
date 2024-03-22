@@ -95,7 +95,9 @@ public static class Endpoints
             syntaxTrees: new[] { tree }, references: new[] { Mscorlib, udup, WebApplication });
         var model = compilation.GetSemanticModel(tree);
 
-        return await Gatherer_EventTraces.Get(tree, model);
+        var gatherer = new Gatherer_EventTraces(model);
+        gatherer.Visit(await tree.GetRootAsync());
+        return gatherer.EventTraces;
     }
 
     #endregion

@@ -19,28 +19,6 @@ public class Gatherer_EventHandlers : CSharpSyntaxWalker
         this.semanticModel = semanticModel;
     }
 
-    public async Task<EventHandler[]> Get(SyntaxTree tree)
-    {
-        var root = tree.GetRoot();
-
-        return root.DescendantNodes().OfType<BaseTypeDeclarationSyntax>()
-            .Select(syntax => semanticModel.GetDeclaredSymbol(syntax))
-            .Where(symbol => symbol != null)
-            .Where(symbol => symbol!.IsImplicitlyDeclared is false)
-            .Where(IsUdupEventHandler)
-            .Select(_ => new EventHandler(new(_.Name), _.Interfaces
-                .Where(@interface => @interface.ToDisplayString(DisplayFormat) == $"{typeof(IUdupHandler).FullName}")
-                .Select(_ => new IdAndName(_.TypeArguments.First().Name))
-                .ToArray()))
-            .ToArray();
-    }
-    
-    public EventHandler[] GetWithWalker(SyntaxTree tree)
-    {
-        Visit(tree.GetRoot());
-        return eventHandlers.ToArray();
-    }
-
     private static bool IsUdupEventHandler(INamedTypeSymbol symbol)
     {
         return symbol.Interfaces
@@ -48,7 +26,7 @@ public class Gatherer_EventHandlers : CSharpSyntaxWalker
             .Any(@interface => @interface.IsGenericType);
     }
 
-    public List<EventHandler> eventHandlers = new();
+    public List<EventHandler> EventHandlers = new();
 
     public override void VisitClassDeclaration(ClassDeclarationSyntax node)
     {
@@ -71,8 +49,6 @@ public class Gatherer_EventHandlers : CSharpSyntaxWalker
                 .ToArray()
         );
         
-        eventHandlers.Add(handler);
-        
-        base.VisitClassDeclaration(node);
+        EventHandlers.Add(handler);
     }
 }

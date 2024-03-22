@@ -32,8 +32,6 @@
     <ItemGroup>
         <ProjectReference Include="..\..\src\Udup.AspNet\Udup.AspNet.csproj"/>
         <ProjectReference Include="..\..\src\Udup.Core\Udup.Core.csproj" />
-        <ProjectReference Include="..\..\src\Udup.SourceGenerators\Udup.SourceGenerators.csproj" OutputItemType="Analyzer"
-                          ReferenceOutputAssembly="false"/>
     </ItemGroup>
 
 </Project>

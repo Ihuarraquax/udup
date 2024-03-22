@@ -5,6 +5,7 @@ using Udup.WebApp;
 
 namespace UdupTests.AspNet;
 
+
 public class BasicTests 
     : IClassFixture<CustomWebApplicationFactory>
 {

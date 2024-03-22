@@ -12,6 +12,18 @@ public class GathererTests : IClassFixture<GathererFixture>
     }
 
     [Fact]
+    public async Task GetsAll()
+    {
+        // Arrange
+
+        // Act
+        var udupResponse = await gatherer.Gather();
+
+        // Assert
+        await Verify(udupResponse);
+    }
+    
+    [Fact]
     public async Task GetsAllEvents()
     {
         // Arrange

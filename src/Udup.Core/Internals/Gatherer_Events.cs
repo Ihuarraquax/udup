@@ -5,18 +5,40 @@ using Udup.Abstractions;
 
 namespace Udup.Core.Internals;
 
-internal class Gatherer_Events
+public class Gatherer_Events : CSharpSyntaxWalker
 {
-    public static async Task<IdAndName[]> Get(SyntaxTree tree, SemanticModel? semanticModel)
-    {
-        var root = tree.GetRoot();
+    private readonly SemanticModel? semanticModel;
+    public readonly List<IdAndName> Events = new();
 
-        return root.DescendantNodes().OfType<BaseTypeDeclarationSyntax>()
-            .Select(syntax => semanticModel.GetDeclaredSymbol(syntax))
-            .Where(symbol => symbol != null)
-            .Where(symbol => symbol!.IsImplicitlyDeclared is false)
-            .Where(symbol => symbol.IsUdupEvent())
-            .Select(symbol => new IdAndName(symbol.Name))
-            .ToArray();
+    public Gatherer_Events(SemanticModel? semanticModel)
+    {
+        this.semanticModel = semanticModel;
+    }
+
+    public override void VisitClassDeclaration(ClassDeclarationSyntax node)
+    {
+        Process(node);
+    }
+
+    public override void VisitRecordDeclaration(RecordDeclarationSyntax node)
+    {
+        Process(node);
+    }
+
+    public void Process(BaseTypeDeclarationSyntax node)
+    {
+        var symbol = semanticModel.GetDeclaredSymbol(node);
+        if (symbol is null) return;
+        if (symbol.IsImplicitlyDeclared) return;
+
+        if (symbol.IsUdupEvent())
+        {
+            Events.Add(BuildEventResponse(symbol));
+        }
+    }
+
+    private static IdAndName BuildEventResponse(INamedTypeSymbol symbol)
+    {
+        return new IdAndName(symbol.Name);
     }
 }

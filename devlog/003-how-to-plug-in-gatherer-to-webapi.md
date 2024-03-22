@@ -8,11 +8,12 @@ It failed because I didn't find a way to use Roslyn at runtime. I assume that th
 
 ### Approach 2. Use source generator (NOT LIKELY)
 
-It could work but there are two massive problems:
+It could work but there are massive problems:
 1. It's hard to use PackageReferences and ProjectReferences. https://github.com/dotnet/roslyn/discussions/47517#discussioncomment-64145
 2. It's hard to adjust configuration in code. 2 ways came up to my mind and both feels bad. 
    1. Use only attributes to point out types that represents events and eventhandlers.
    2. Add json configuration file
+3. netstandard 2.1
 
 ### Approach 3. Use console application and provide it to `dotnet tool` (GOOD AT START)
 
