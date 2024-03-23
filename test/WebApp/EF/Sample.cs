@@ -14,7 +14,6 @@ public class Sample
 
     public void AddDomainEvent(INotification eventItem)
     {
-        domainEvents ??= new List<INotification>();
         domainEvents.Add(eventItem);
     }
     
@@ -26,5 +25,10 @@ public class Sample
     public void MakeActionD()
     {
         AddDomainEvent(new DomainEventDHappened());
+    }    
+    
+    public void MakeActionX()
+    {
+        AddDomainEvent(new DomainEventXHappened());
     }
 }

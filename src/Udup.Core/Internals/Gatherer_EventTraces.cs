@@ -26,59 +26,58 @@ public class Gatherer_EventTraces : CSharpSyntaxWalker
         var symbol = semanticModel.GetSymbolInfo(node).Symbol;
         if (symbol is null) return;
         if (symbol.ContainingType.IsUdupEvent() is false) return;
-        
+
         var stringBuilder = BuildPath(node, semanticModel);
+        
         EventTraces.Add(new EventTrace(
             new IdAndName(symbol.ContainingType.Name),
             new IdAndName(CreateIdentifier(node), stringBuilder)));
     }
 
-    private static string BuildPath(SyntaxNode? node, SemanticModel semanticModel)
-    {
-        var stringBuilder = new StringBuilder();
-
-        switch (node)
-        {
-            case null:
-                return "";
-            case InvocationExpressionSyntax
-            {
-                Expression: MemberAccessExpressionSyntax
-                {
-                    Expression: IdentifierNameSyntax identifierName
-                } memberAccess
-            } invocation:
-            {
-                var symbol = ModelExtensions.GetSymbolInfo(semanticModel, identifierName);
-                if (IsWebApplication(symbol))
-                {
-                    var method = ToHttpMethod(memberAccess.Name.Identifier.Text);
-                    var path = invocation.ArgumentList.Arguments[0].Expression.ToString();
-
-                    stringBuilder.Append($"{method} {path}");
-                    return stringBuilder.ToString();
-                }
-
-                break;
-            }
-        }
-
-        stringBuilder.Append(BuildPath(node.Parent, semanticModel));
-
-        switch (node)
-        {
-            case MethodDeclarationSyntax methodDeclaration:
-                stringBuilder.Append(methodDeclaration.Identifier.Text);
-                stringBuilder.Append("()");
-                break;
-            case BaseTypeDeclarationSyntax typeDeclaration:
-                stringBuilder.Append(typeDeclaration.Identifier.Text);
-                stringBuilder.Append('.');
-                break;
-        }
-
-        return stringBuilder.ToString();
-    }
+    // private static string BuildPath(SyntaxNode? node, SemanticModel semanticModel)
+    // {
+    //     var stringBuilder = new StringBuilder();
+    //
+    //     if (node == null)
+    //     {
+    //         return "";
+    //     }
+    //
+    //     if (node is InvocationExpressionSyntax
+    //         {
+    //             Expression: MemberAccessExpressionSyntax
+    //             {
+    //                 Expression: IdentifierNameSyntax identifierName
+    //             } memberAccess
+    //         } invocation)
+    //     {
+    //         var symbol = ModelExtensions.GetSymbolInfo(semanticModel, identifierName);
+    //         if (IsWebApplication(symbol))
+    //         {
+    //             var method = ToHttpMethod(memberAccess.Name.Identifier.Text);
+    //             var path = invocation.ArgumentList.Arguments[0].Expression.ToString();
+    //
+    //             stringBuilder.Append($"{method} {path}");
+    //             return stringBuilder.ToString();
+    //         }
+    //     }
+    //
+    //     stringBuilder.Append(BuildPath(node.Parent, semanticModel));
+    //
+    //     switch (node)
+    //     {
+    //         case MethodDeclarationSyntax methodDeclaration:
+    //             stringBuilder.Append(methodDeclaration.Identifier.Text);
+    //             stringBuilder.Append("()");
+    //             break;
+    //         case BaseTypeDeclarationSyntax typeDeclaration:
+    //             stringBuilder.Append(typeDeclaration.Identifier.Text);
+    //             stringBuilder.Append('.');
+    //             break;
+    //     }
+    //
+    //     return stringBuilder.ToString();
+    // }
 
     private static bool IsWebApplication(SymbolInfo node)
     {
