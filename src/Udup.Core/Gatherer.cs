@@ -26,10 +26,8 @@ public class Gatherer
     public async Task<UdupResponse> Gather()
     {
         var solution = await OpenSolutionAsync();
-
-        var events = new List<IdAndName>();
-        var eventHandlers = new List<EventHandler>();
-        var eventTraces = new List<EventTrace>();
+        
+        var rootsWithSemantics = new List<(SyntaxNode root, SemanticModel semanticModel)>();
 
         foreach (var project in solution.Projects)
         {
@@ -41,20 +39,12 @@ public class Gatherer
                 var root = await tree.GetRootAsync();
                 
                 var semanticModel = compilation.GetSemanticModel(tree);
-
-                var visitor = new Gatherer_Visitor(semanticModel);
-                visitor.Visit(root);
-                events.AddRange(visitor.events.Events);
-                eventHandlers.AddRange(visitor.eventHandlers.EventHandlers);
-                eventTraces.AddRange(visitor.eventTraces.EventTraces);
+                rootsWithSemantics.Add((root, semanticModel));
             }
         }
-
-        return new UdupResponse(
-            events,
-            eventHandlers,
-            eventTraces
-        );
+        
+        var visitor = new Gatherer_Visitor(rootsWithSemantics);
+        return visitor.Gather();
     }
 
     public async Task<List<IdAndName>> GatherEvents()
@@ -121,7 +111,7 @@ public class Gatherer
         await IterateThroughProjectsAndDocuments(solution,
             async (tree, semanticModel) =>
             {
-                var eventTracesWalker = new Gatherer_EventTraces(semanticModel);
+                var eventTracesWalker = new Gatherer_EventTraces(semanticModel, tree.GetRoot());
                 eventTracesWalker.Visit(await tree.GetRootAsync());
                 eventTraces.AddRange(eventTracesWalker.EventTraces);
             });

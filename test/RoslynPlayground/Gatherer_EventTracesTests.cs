@@ -183,7 +183,7 @@ public class XActioner
             syntaxTrees: new[] { tree }, references: new[] { Mscorlib, udup, WebApplication });
         var model = compilation.GetSemanticModel(tree);
 
-        var gatherer = new Gatherer_EventTraces(model);
+        var gatherer = new Gatherer_EventTraces(model, await tree.GetRootAsync());
         gatherer.Visit(await tree.GetRootAsync());
         return gatherer.EventTraces;
     }

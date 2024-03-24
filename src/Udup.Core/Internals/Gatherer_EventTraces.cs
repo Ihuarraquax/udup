@@ -8,12 +8,12 @@ namespace Udup.Core.Internals;
 
 public class Gatherer_EventTraces : CSharpSyntaxWalker
 {
-    private readonly SemanticModel semanticModel;
     public readonly List<EventTrace> EventTraces = [];
+    public List<(SyntaxNode root, SemanticModel semanticModel)> rootsWithSemantics;
 
-    public Gatherer_EventTraces(SemanticModel semanticModel)
+    public Gatherer_EventTraces(List<(SyntaxNode root, SemanticModel semanticModel)> rootsWithSemantics)
     {
-        this.semanticModel = semanticModel;
+        this.rootsWithSemantics = rootsWithSemantics;
     }
 
     public override void VisitObjectCreationExpression(ObjectCreationExpressionSyntax node)
@@ -27,11 +27,72 @@ public class Gatherer_EventTraces : CSharpSyntaxWalker
         if (symbol is null) return;
         if (symbol.ContainingType.IsUdupEvent() is false) return;
 
-        var stringBuilder = BuildPath(node, semanticModel);
-        
+        EventUsages eventUsages = BuildEventUsages(node);
+
         EventTraces.Add(new EventTrace(
             new IdAndName(symbol.ContainingType.Name),
-            new IdAndName(CreateIdentifier(node), stringBuilder)));
+            new IdAndName(CreateIdentifier(node), "")));
+    }
+
+    private EventUsages BuildEventUsages(ObjectCreationExpressionSyntax node)
+    {
+        var eventParent = FindEventParent(node);
+
+        var eventParentUsages = FindEventParentUsages(eventParent);
+
+        return null;
+    }
+
+    private object FindEventParentUsages(IAmCreatingEvent eventParent)
+    {
+        foreach (var VARIABLE in COLLECTION)
+        {
+            
+        }
+        // if Method
+        // look for usages
+
+
+        return null;
+    }
+
+    private IAmCreatingEvent FindEventParent(SyntaxNode node)
+    {
+        while (node.Parent != null)
+        {
+            if (node.Parent is PropertyDeclarationSyntax)
+                return new SomethingCreatingEvent(node.Parent);
+
+            if (node.Parent is MethodDeclarationSyntax)
+                return new SomethingCreatingEvent(node.Parent);
+
+            if (IsMinimalApiEndpoint(node.Parent))
+            {
+                return new SomethingCreatingEvent(node.Parent);
+            }
+
+
+            node = node.Parent;
+        }
+
+        throw new InvalidOperationException("Could not find parent of event");
+    }
+
+    private bool IsMinimalApiEndpoint(SyntaxNode nodeParent)
+    {
+        if (nodeParent is InvocationExpressionSyntax
+            {
+                Expression: MemberAccessExpressionSyntax
+                {
+                    Expression: IdentifierNameSyntax identifierName
+                }
+            })
+        {
+            var symbol = ModelExtensions.GetSymbolInfo(semanticModel, identifierName);
+            return IsWebApplication(symbol);
+        }
+
+        return false;
     }
 
     // private static string BuildPath(SyntaxNode? node, SemanticModel semanticModel)
@@ -108,4 +169,16 @@ public class Gatherer_EventTraces : CSharpSyntaxWalker
             _ => "UNKNOWN"
         };
     }
+}
+
+public record EventUsages
+{
+    List<Usages> DirectUsages;
+}
+
+internal class Usages
+{
+    private string Path;
+
+    List<Usages> IndirectUsages;
 }
