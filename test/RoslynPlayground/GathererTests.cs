@@ -4,11 +4,11 @@ namespace RoslynPlayground;
 
 public class GathererTests : IClassFixture<GathererFixture>
 {
-    private readonly Gatherer gatherer;
+    private readonly SolutionReader solutionReader;
 
     public GathererTests(GathererFixture gathererFixture)
     {
-        this.gatherer = gathererFixture.Instance;
+        solutionReader = gathererFixture.Instance;
     }
 
     [Fact]
@@ -17,7 +17,7 @@ public class GathererTests : IClassFixture<GathererFixture>
         // Arrange
 
         // Act
-        var udupResponse = await gatherer.Gather();
+        var udupResponse = new Gatherer(await solutionReader.GatherSolutionNodesWithSemantics()).Gather();
 
         // Assert
         await Verify(udupResponse);
@@ -29,7 +29,7 @@ public class GathererTests : IClassFixture<GathererFixture>
         // Arrange
 
         // Act
-        var events = await gatherer.GatherEvents();
+        var events = new Gatherer(await solutionReader.GatherSolutionNodesWithSemantics()).GatherEvents();
 
         // Assert
         await Verify(events);
@@ -41,10 +41,10 @@ public class GathererTests : IClassFixture<GathererFixture>
         // Arrange
 
         // Act
-        var events = await gatherer.GatherEventTraces();
+        var eventTraces = new Gatherer(await solutionReader.GatherSolutionNodesWithSemantics()).GatherEventTraces();
 
         // Assert
-        await Verify(events);
+        await Verify(eventTraces);
     }
 
     [Fact]
@@ -53,7 +53,7 @@ public class GathererTests : IClassFixture<GathererFixture>
         // Arrange
 
         // Act
-        var eventHandlers = await gatherer.GatherEventHandlers();
+        var eventHandlers = new Gatherer(await solutionReader.GatherSolutionNodesWithSemantics()).GatherEventHandlers();
 
         // Assert
         await Verify(eventHandlers);
@@ -62,5 +62,5 @@ public class GathererTests : IClassFixture<GathererFixture>
 
 public class GathererFixture
 {
-    public readonly Gatherer Instance = new(@"C:\P\Edu\udup\Udup.sln");
+    public readonly SolutionReader Instance = new(@"C:\P\Edu\udup\Udup.sln");
 }

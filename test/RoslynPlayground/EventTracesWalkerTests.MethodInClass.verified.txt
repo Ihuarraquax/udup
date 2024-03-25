@@ -1,0 +1,12 @@
+﻿[
+  {
+    Event: {
+      Id: DomainEventBHappened,
+      Name: DomainEventBHappened
+    },
+    Trace: {
+      Id: creation478e504,
+      Name: 
+    }
+  }
+]

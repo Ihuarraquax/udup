@@ -1,13 +1,11 @@
-﻿using FluentAssertions;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.CodeAnalysis;
+﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Udup.Abstractions;
-using Udup.Core.Internals;
+using Udup.Core.Internals.Walkers;
 
 namespace RoslynPlayground;
 
-public class Gatherer_EventTracesTests
+public class EventTracesWalkerTests
 {
     [Fact]
     public async Task MethodInClass()
@@ -45,9 +43,7 @@ class DomainEventBService : IDomainEventBService
         var result = await Act(tree);
 
         // Assert
-        var eventTrace = result.Should().ContainSingle().Which;
-        eventTrace.Event.Name.Should().Be("DomainEventBHappened");
-        eventTrace.Trace.Name.Should().Be("DomainEventBService.SendBEvent()");
+        await Verify(result);
     }
 
     [Fact]
@@ -79,9 +75,7 @@ public static class Endpoints
         var result = await Act(tree);
 
         // Assert
-        var eventTrace = result.Should().ContainSingle().Which;
-        eventTrace.Event.Name.Should().Be("DomainEventAHappened");
-        eventTrace.Trace.Name.Should().Be("GET \"/domainEventA\"");
+        await Verify(result);
     }
 
     [Fact]
@@ -167,9 +161,7 @@ public class XActioner
         var result = await Act(tree);
 
         // Assert
-        var eventTrace = result.Should().ContainSingle().Which;
-        eventTrace.Event.Name.Should().Be("DomainEventAHappened");
-        eventTrace.Trace.Name.Should().Be("GET \"/domainEventA\"");
+        await Verify(result);
     }
 
     #region Arrange
@@ -183,7 +175,11 @@ public class XActioner
             syntaxTrees: new[] { tree }, references: new[] { Mscorlib, udup, WebApplication });
         var model = compilation.GetSemanticModel(tree);
 
-        var gatherer = new Gatherer_EventTraces(model, await tree.GetRootAsync());
+        var gatherer = new EventTracesWalker(new List<(SyntaxNode root, SemanticModel semanticModel)>()
+        {
+            (await tree.GetRootAsync(), model)
+        }, model);
+        
         gatherer.Visit(await tree.GetRootAsync());
         return gatherer.EventTraces;
     }

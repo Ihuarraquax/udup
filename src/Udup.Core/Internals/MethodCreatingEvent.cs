@@ -1,4 +1,5 @@
 ﻿using Microsoft.CodeAnalysis;
+using Udup.Abstractions;
 
 namespace Udup.Core.Internals;
 
@@ -14,5 +15,10 @@ class SomethingCreatingEvent : IAmCreatingEvent
     public bool ThisUsageIsMe()
     {
         return true;
+    }
+
+    public Usage[] FindUsagesHere(SyntaxNode root, SemanticModel semanticModel)
+    {
+        
     }
 }

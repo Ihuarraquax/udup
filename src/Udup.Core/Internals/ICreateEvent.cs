@@ -1,6 +1,9 @@
-﻿namespace Udup.Core.Internals;
+﻿using Microsoft.CodeAnalysis;
+using Udup.Abstractions;
+
+namespace Udup.Core.Internals;
 
 public interface IAmCreatingEvent
 {
-    bool ThisUsageIsMe();
+    Usage[] FindUsagesHere(SyntaxNode root, SemanticModel semanticModel);
 }

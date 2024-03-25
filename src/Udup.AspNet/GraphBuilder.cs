@@ -24,11 +24,11 @@ internal static class GraphBuilder
             graphBuilder.AppendLine($"{@event.Id}((\"{@event.Name}\"))");
         }
 
-        foreach (var trace in result.Traces)
-        {
-            graphBuilder.AppendLine($"{trace.Trace.Id}[\"{trace.Trace.Name}\"]");
-            graphBuilder.AppendLine($"{trace.Trace.Id} --> {trace.Event.Id}");
-        }
+        // foreach (var trace in result.Traces)
+        // {
+        //     graphBuilder.AppendLine($"{trace.Trace.Id}[\"{trace.Trace.Name}\"]");
+        //     graphBuilder.AppendLine($"{trace.Trace.Id} --> {trace.Event.Id}");
+        // }
 
         return graphBuilder.ToString();
     }

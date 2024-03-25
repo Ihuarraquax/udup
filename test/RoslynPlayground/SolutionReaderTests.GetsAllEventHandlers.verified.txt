@@ -1,0 +1,78 @@
+﻿[
+  {
+    Handler: {
+      Id: DomainEventAHappenedHandlerA,
+      Name: DomainEventAHappenedHandlerA
+    },
+    Events: [
+      {
+        Id: DomainEventAHappened,
+        Name: DomainEventAHappened
+      }
+    ]
+  },
+  {
+    Handler: {
+      Id: DomainEventAHappenedHandlerB,
+      Name: DomainEventAHappenedHandlerB
+    },
+    Events: [
+      {
+        Id: DomainEventAHappened,
+        Name: DomainEventAHappened
+      }
+    ]
+  },
+  {
+    Handler: {
+      Id: DomainEventAHappenedHandlerC,
+      Name: DomainEventAHappenedHandlerC
+    },
+    Events: [
+      {
+        Id: DomainEventAHappened,
+        Name: DomainEventAHappened
+      }
+    ]
+  },
+  {
+    Handler: {
+      Id: DomainEventAHappenedHandlerD,
+      Name: DomainEventAHappenedHandlerD
+    },
+    Events: [
+      {
+        Id: DomainEventAHappened,
+        Name: DomainEventAHappened
+      }
+    ]
+  },
+  {
+    Handler: {
+      Id: DomainEventBHappenedHandlerA,
+      Name: DomainEventBHappenedHandlerA
+    },
+    Events: [
+      {
+        Id: DomainEventBHappened,
+        Name: DomainEventBHappened
+      }
+    ]
+  },
+  {
+    Handler: {
+      Id: DomainEventBAndCHappenedHandlerA,
+      Name: DomainEventBAndCHappenedHandlerA
+    },
+    Events: [
+      {
+        Id: DomainEventBHappened,
+        Name: DomainEventBHappened
+      },
+      {
+        Id: DomainEventCHappened,
+        Name: DomainEventCHappened
+      }
+    ]
+  }
+]

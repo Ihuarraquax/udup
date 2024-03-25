@@ -1,19 +1,20 @@
-﻿using System.Text;
-using Microsoft.CodeAnalysis;
+﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Udup.Abstractions;
 
-namespace Udup.Core.Internals;
+namespace Udup.Core.Internals.Walkers;
 
-public class Gatherer_EventTraces : CSharpSyntaxWalker
+public class EventTracesWalker : CSharpSyntaxWalker
 {
     public readonly List<EventTrace> EventTraces = [];
     public List<(SyntaxNode root, SemanticModel semanticModel)> rootsWithSemantics;
+    private readonly SemanticModel semanticModel;
 
-    public Gatherer_EventTraces(List<(SyntaxNode root, SemanticModel semanticModel)> rootsWithSemantics)
+    public EventTracesWalker(List<(SyntaxNode root, SemanticModel semanticModel)> rootsWithSemantics, SemanticModel semanticModel)
     {
         this.rootsWithSemantics = rootsWithSemantics;
+        this.semanticModel = semanticModel;
     }
 
     public override void VisitObjectCreationExpression(ObjectCreationExpressionSyntax node)
@@ -30,30 +31,27 @@ public class Gatherer_EventTraces : CSharpSyntaxWalker
         EventUsages eventUsages = BuildEventUsages(node);
 
         EventTraces.Add(new EventTrace(
-            new IdAndName(symbol.ContainingType.Name),
-            new IdAndName(CreateIdentifier(node), "")));
+            new IdAndName(symbol.ContainingType.Name), eventUsages));
     }
 
     private EventUsages BuildEventUsages(ObjectCreationExpressionSyntax node)
     {
         var eventParent = FindEventParent(node);
 
-        var eventParentUsages = FindEventParentUsages(eventParent);
-
-        return null;
+        var eventParentUsages = FindUsages(eventParent);
+        
+        return new EventUsages(eventParentUsages);
     }
 
-    private object FindEventParentUsages(IAmCreatingEvent eventParent)
+    private List<Usage> FindUsages(IAmCreatingEvent eventParent)
     {
-        foreach (var VARIABLE in COLLECTION)
+        List<Usage> usages = new();
+        foreach (var (root, semanticModel) in rootsWithSemantics)
         {
-            
+            usages.AddRange(eventParent.FindUsagesHere(root, semanticModel));
         }
-        // if Method
-        // look for usages
-
-
-        return null;
+        
+        return usages;
     }
 
     private IAmCreatingEvent FindEventParent(SyntaxNode node)
@@ -169,16 +167,4 @@ public class Gatherer_EventTraces : CSharpSyntaxWalker
             _ => "UNKNOWN"
         };
     }
-}
-
-public record EventUsages
-{
-    List<Usages> DirectUsages;
-}
-
-internal class Usages
-{
-    private string Path;
-
-    List<Usages> IndirectUsages;
 }

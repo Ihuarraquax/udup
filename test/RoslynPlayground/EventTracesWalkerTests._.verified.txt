@@ -1,0 +1,32 @@
+﻿[
+  {
+    Event: {
+      Id: DomainEventXHappened,
+      Name: DomainEventXHappened
+    },
+    Trace: {
+      Id: creation550e576,
+      Name: 
+    }
+  },
+  {
+    Event: {
+      Id: DomainEventXHappened,
+      Name: DomainEventXHappened
+    },
+    Trace: {
+      Id: creation1407e1433,
+      Name: 
+    }
+  },
+  {
+    Event: {
+      Id: DomainEventXHappened,
+      Name: DomainEventXHappened
+    },
+    Trace: {
+      Id: creation1834e1860,
+      Name: 
+    }
+  }
+]

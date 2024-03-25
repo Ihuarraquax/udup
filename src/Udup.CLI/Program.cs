@@ -16,8 +16,8 @@ internal class Program
 
         var solutionPath = args[0];
         var udupFilePath = args[1];
-        var gatherer = new Gatherer(solutionPath);
+        var gatherer = new SolutionReader(solutionPath);
         await using StreamWriter outputFile = new StreamWriter(Path.Combine(udupFilePath, "Udup.json"));
-        await outputFile.WriteAsync(JsonSerializer.Serialize(await gatherer.Gather()));
+        await outputFile.WriteAsync(JsonSerializer.Serialize(new Gatherer(await gatherer.GatherSolutionNodesWithSemantics()).Gather()));
     }
 }

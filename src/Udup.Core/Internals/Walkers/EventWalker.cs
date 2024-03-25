@@ -3,14 +3,14 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Udup.Abstractions;
 
-namespace Udup.Core.Internals;
+namespace Udup.Core.Internals.Walkers;
 
-public class Gatherer_Events : CSharpSyntaxWalker
+public class EventWalker : CSharpSyntaxWalker
 {
     private readonly SemanticModel? semanticModel;
     public readonly List<IdAndName> Events = new();
 
-    public Gatherer_Events(SemanticModel? semanticModel)
+    public EventWalker(SemanticModel? semanticModel)
     {
         this.semanticModel = semanticModel;
     }
