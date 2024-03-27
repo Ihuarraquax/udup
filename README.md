@@ -4,6 +4,10 @@
 ## General Information
 - Generate nice living documentation from code
 
+## How it should work?
+To use this tool you will need to first, run analyzer on your solution (can be manually, or automate it) and ship result file with as embedded resource.
+
+
 ## Road map
 
 - [x] Display events and event handlers in a diagram
