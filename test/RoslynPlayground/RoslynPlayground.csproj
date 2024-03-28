@@ -30,6 +30,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\src\Udup.Analyzer\Udup.Analyzer.csproj" />
       <ProjectReference Include="..\..\src\Udup.Core\Udup.Core.csproj" />
     </ItemGroup>
 

@@ -19,6 +19,6 @@ class SomethingCreatingEvent : IAmCreatingEvent
 
     public Usage[] FindUsagesHere(SyntaxNode root, SemanticModel semanticModel)
     {
-        
+        return null;
     }
 }

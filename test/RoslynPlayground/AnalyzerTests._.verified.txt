@@ -1,0 +1,28 @@
+﻿[
+  {
+    Name: Udup.WebApp.Endpoints2,
+    Methods: [
+      Udup.WebApp.Endpoints2.MapDomainEventBEndpointsWithService2(Microsoft.AspNetCore.Builder.WebApplication)
+    ]
+  },
+  {
+    Name: Udup.WebApp.DomainEventXService,
+    Interfaces: [
+      Udup.WebApp.IDomainEventXService
+    ],
+    Methods: [
+      Udup.WebApp.DomainEventXService.DomainEventXService(IMediator),
+      Udup.WebApp.DomainEventXService.SendXEvent()
+    ]
+  },
+  {
+    Name: Udup.WebApp.XActioner,
+    Methods: [
+      Udup.WebApp.XActioner.Id.get,
+      Udup.WebApp.XActioner.Id.set,
+      Udup.WebApp.XActioner.DomainEvents.get,
+      Udup.WebApp.XActioner.AddDomainEvent(INotification),
+      Udup.WebApp.XActioner.MakeActionX()
+    ]
+  }
+]

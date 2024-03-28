@@ -1,83 +1,12 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Udup.Abstractions;
-using Udup.Core.Internals.Walkers;
+using Udup.Analyzer;
 
 namespace RoslynPlayground;
 
-public class EventTracesWalkerTests
+public class AnalyzerTests
 {
-    [Fact]
-    public async Task MethodInClass()
-    {
-        // Arrange
-        var tree = CSharpSyntaxTree.ParseText(@"
-using MediatR;
-using Udup.Abstractions;
-
-namespace Udup.WebApp;
-
-public record DomainEventBHappened : INotification, IUdupMessage;
-
-public interface IDomainEventBService
-{
-    Task SendBEvent();
-}
-
-class DomainEventBService : IDomainEventBService
-{
-    private readonly IMediator mediator;
-
-    public DomainEventBService(IMediator mediator)
-    {
-        this.mediator = mediator;
-    }
-
-    public Task SendBEvent()
-    {
-        return mediator.Send(new DomainEventBHappened());
-    }
-}
-");
-        // Act
-        var result = await Act(tree);
-
-        // Assert
-        await Verify(result);
-    }
-
-    [Fact]
-    public async Task InAppMapGet()
-    {
-        // Arrange
-        var tree = CSharpSyntaxTree.ParseText(@"
-using MediatR;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Mvc;
-using Udup.Abstractions;
-
-namespace Udup.WebApp;
-
-public record DomainEventAHappened : INotification, IUdupMessage;
-
-public static class Endpoints
-{
-    public static void MapDomainEventBEndpointsWithService(this WebApplication app)
-    {
-        app.MapGet(""/domainEventA"", ([FromServices] IMediator mediator) =>
-        {
-            mediator.Publish(new DomainEventAHappened());
-        });
-    }
-}
-");
-        // Act
-        var result = await Act(tree);
-
-        // Assert
-        await Verify(result);
-    }
-
     [Fact]
     public async Task _()
     {
@@ -164,9 +93,8 @@ public class XActioner
         await Verify(result);
     }
 
-    #region Arrange
 
-    private static async Task<List<EventTrace>> Act(SyntaxTree tree)
+    private static async Task<List<UdupType>> Act(SyntaxTree tree)
     {
         var Mscorlib = MetadataReference.CreateFromFile(typeof(object).Assembly.Location);
         var udup = MetadataReference.CreateFromFile(typeof(IUdupMessage).Assembly.Location);
@@ -176,15 +104,6 @@ public class XActioner
             references: new[] { Mscorlib, udup, WebApplication });
         var model = compilation.GetSemanticModel(tree);
 
-        var gatherer = new EventTracesWalker(new List<(SyntaxNode root, SemanticModel semanticModel)>
-            {
-                (await tree.GetRootAsync(), model)
-            },
-            model);
-
-        gatherer.Visit(await tree.GetRootAsync());
-        return gatherer.EventTraces;
+        return new Analyzer().Analyze([(await tree.GetRootAsync(), model)]);
     }
-
-    #endregion
 }
