@@ -2,7 +2,9 @@
   {
     Name: Udup.WebApp.Endpoints2,
     Methods: [
-      Udup.WebApp.Endpoints2.MapDomainEventBEndpointsWithService2(Microsoft.AspNetCore.Builder.WebApplication)
+      {
+        Name: Udup.WebApp.Endpoints2.MapDomainEventBEndpointsWithService2(Microsoft.AspNetCore.Builder.WebApplication)
+      }
     ]
   },
   {
@@ -11,18 +13,98 @@
       Udup.WebApp.IDomainEventXService
     ],
     Methods: [
-      Udup.WebApp.DomainEventXService.DomainEventXService(IMediator),
-      Udup.WebApp.DomainEventXService.SendXEvent()
+      {
+        Name: Udup.WebApp.DomainEventXService.DomainEventXService(IMediator)
+      },
+      {
+        Name: Udup.WebApp.DomainEventXService.SendXEvent(),
+        UsedIn: [
+          {
+            Kind: SourceFile,
+            SourceSpan: {
+              Start: 723,
+              Length: 10
+            },
+            SourceTree: {
+              FilePath: File1.cs,
+              Length: 1883,
+              HasCompilationUnitRoot: true,
+              Options: {
+                LanguageVersion: CSharp12,
+                Language: C#,
+                DocumentationMode: Parse,
+                Errors: null
+              }
+            },
+            IsInSource: true,
+            IsInMetadata: false
+          }
+        ]
+      }
     ]
   },
   {
     Name: Udup.WebApp.XActioner,
     Methods: [
-      Udup.WebApp.XActioner.Id.get,
-      Udup.WebApp.XActioner.Id.set,
-      Udup.WebApp.XActioner.DomainEvents.get,
-      Udup.WebApp.XActioner.AddDomainEvent(INotification),
-      Udup.WebApp.XActioner.MakeActionX()
+      {
+        Name: Udup.WebApp.XActioner.Id.get
+      },
+      {
+        Name: Udup.WebApp.XActioner.Id.set
+      },
+      {
+        Name: Udup.WebApp.XActioner.DomainEvents.get
+      },
+      {
+        Name: Udup.WebApp.XActioner.AddDomainEvent(INotification),
+        UsedIn: [
+          {
+            Kind: SourceFile,
+            SourceSpan: {
+              Start: 1826,
+              Length: 14
+            },
+            SourceTree: {
+              FilePath: File1.cs,
+              Length: 1883,
+              HasCompilationUnitRoot: true,
+              Options: {
+                LanguageVersion: CSharp12,
+                Language: C#,
+                DocumentationMode: Parse,
+                Errors: null
+              }
+            },
+            IsInSource: true,
+            IsInMetadata: false
+          }
+        ]
+      },
+      {
+        Name: Udup.WebApp.XActioner.MakeActionX(),
+        UsedIn: [
+          {
+            Kind: SourceFile,
+            SourceSpan: {
+              Start: 1000,
+              Length: 11
+            },
+            SourceTree: {
+              FilePath: File1.cs,
+              Length: 1883,
+              HasCompilationUnitRoot: true,
+              Options: {
+                LanguageVersion: CSharp12,
+                Language: C#,
+                DocumentationMode: Parse,
+                Errors: null
+              }
+            },
+            IsInSource: true,
+            IsInMetadata: false
+          }
+        ]
+      }
     ]
   }
 ]

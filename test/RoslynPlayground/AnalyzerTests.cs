@@ -11,7 +11,7 @@ public class AnalyzerTests
     public async Task _()
     {
         // Arrange
-        var tree = CSharpSyntaxTree.ParseText(@"
+        var source = @"
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -39,8 +39,8 @@ public static class Endpoints2
         app.MapPost(""/domainEventXDomain"",
                 ([FromServices] IMediator mediator, IDomainEventBService service) =>
                 {
-                    var sample = new Sample();
-                    sample.MakeActionX();
+                    var actioner = new XActioner();
+                    actioner.MakeActionX();
                 })
             .WithOpenApi();
     }
@@ -85,25 +85,37 @@ public class XActioner
     }
 }
 
-");
+";
         // Act
-        var result = await Act(tree);
+        var result = await Act(source);
 
         // Assert
         await Verify(result);
     }
 
 
-    private static async Task<List<UdupType>> Act(SyntaxTree tree)
+    private static async Task<List<UdupType>> Act(string source)
     {
-        var Mscorlib = MetadataReference.CreateFromFile(typeof(object).Assembly.Location);
-        var udup = MetadataReference.CreateFromFile(typeof(IUdupMessage).Assembly.Location);
-        var WebApplication = MetadataReference.CreateFromFile(typeof(WebApplication).Assembly.Location);
-        var compilation = CSharpCompilation.Create("MyCompilation",
-            syntaxTrees: new[] { tree },
-            references: new[] { Mscorlib, udup, WebApplication });
-        var model = compilation.GetSemanticModel(tree);
 
-        return new Analyzer().Analyze([(await tree.GetRootAsync(), model)]);
+        ProjectId projectId = ProjectId.CreateNewId();
+        DocumentId documentId = DocumentId.CreateNewId(projectId);
+
+        Solution solution = new AdhocWorkspace().CurrentSolution
+            .AddProject(projectId, "Project1", "Project1", LanguageNames.CSharp)
+            .AddMetadataReference(projectId, MetadataReference.CreateFromFile(typeof(object).Assembly.Location))
+            .AddMetadataReference(projectId, MetadataReference.CreateFromFile(typeof(IUdupMessage).Assembly.Location))
+            .AddMetadataReference(projectId, MetadataReference.CreateFromFile(typeof(WebApplication).Assembly.Location))
+            .AddDocument(documentId, "File1.cs", source)
+            .WithProjectCompilationOptions(projectId,
+                new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
+        
+        Project project = solution.GetProject(projectId);
+        Document document = project.GetDocument(documentId);
+
+        var compilation = await project.GetCompilationAsync();
+        var root = await document.GetSyntaxRootAsync();
+        var semanticModel = compilation.GetSemanticModel(root.SyntaxTree);
+
+        return new Analyzer(solution).Analyze([(root, semanticModel)]);
     }
 }
