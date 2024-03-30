@@ -15,29 +15,26 @@ public class AnalyzerTests
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using MediatR;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Mvc;
 using Udup.Abstractions;
-using Udup.WebApp.EF;
 
 namespace Udup.WebApp;
 
-public record DomainEventXHappened : INotification, IUdupMessage;
+public record DomainEventXHappened : IUdupMessage;
 
 public static class Endpoints2
 {
     public static void MapDomainEventBEndpointsWithService2(this WebApplication app)
     {
-        app.MapGet(""/domainEventX"",
-            ([FromServices] IMediator mediator) => { mediator.Publish(new DomainEventXHappened()); });
+        app.MapGet(""domainEventX"",
+            () => { new DomainEventXHappened(); });
 
-        app.MapGet(""/domainEventXService"",
-                ([FromServices] IMediator mediator, IDomainEventXService service) => service.SendXEvent())
+        app.MapGet(""domainEventXService"",
+                (IDomainEventXService service) => service.SendXEvent())
             .WithOpenApi();
 
-        app.MapPost(""/domainEventXDomain"",
-                ([FromServices] IMediator mediator, IDomainEventBService service) =>
+        app.MapPost(""domainEventXDomain"",
+                (IDomainEventBService service) =>
                 {
                     var actioner = new XActioner();
                     actioner.MakeActionX();
@@ -53,16 +50,13 @@ public interface IDomainEventXService
 
 class DomainEventXService : IDomainEventXService
 {
-    private readonly IMediator mediator;
-
-    public DomainEventXService(IMediator mediator)
+    public DomainEventXService()
     {
-        this.mediator = mediator;
     }
 
-    public Task SendXEvent()
+    public async Task SendXEvent()
     {
-        return mediator.Send(new DomainEventXHappened());
+        new DomainEventXHappened();
     }
 }
 
@@ -70,11 +64,11 @@ public class XActioner
 {
     public Guid Id { get; set; }
     
-    private List<INotification> domainEvents;
+    private List<IUdupMessage> domainEvents;
 
-    public IReadOnlyCollection<INotification> DomainEvents => domainEvents?.AsReadOnly();
+    public IReadOnlyCollection<IUdupMessage> DomainEvents => domainEvents?.AsReadOnly();
 
-    public void AddDomainEvent(INotification eventItem)
+    public void AddDomainEvent(IUdupMessage eventItem)
     {
         domainEvents.Add(eventItem);
     }
@@ -84,7 +78,6 @@ public class XActioner
         AddDomainEvent(new DomainEventXHappened());
     }
 }
-
 ";
         // Act
         var result = await Act(source);

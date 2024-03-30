@@ -9,14 +9,14 @@ public class Analyzer(Solution solution)
 {
     public List<UdupType> Analyze(List<(SyntaxNode root, SemanticModel semanticModel)> data)
     {
-        var walker = new Walker([], data.First().semanticModel, solution);
+        var walker = new Walker([], data.First().root, data.First().semanticModel, solution);
         walker.Visit(data.First().root);
         
         return walker.UdupTypes;
     }
 }
 
-public class Walker(List<UdupType> udupTypes, SemanticModel semanticModel, Solution solution): CSharpSyntaxWalker
+public class Walker(List<UdupType> udupTypes, SyntaxNode root, SemanticModel semanticModel, Solution solution): CSharpSyntaxWalker
 {
     public readonly List<UdupType> UdupTypes = udupTypes;
 
@@ -38,7 +38,16 @@ public class Walker(List<UdupType> udupTypes, SemanticModel semanticModel, Solut
         {
             var methodSymbol = (IMethodSymbol) member;
             var references = SymbolFinder.FindReferencesAsync(methodSymbol, solution).Result;
-            var udupMethod = new UdupMethod(methodSymbol, references);
+            var referednodes = references
+                .SelectMany(reference => reference.Locations)
+                .Select(location =>
+                {
+                    var node =root.FindNode(location.Location.SourceSpan);
+                    var symbol = semanticModel.GetSymbolInfo(node);
+                    
+                    return symbol.Symbol.ToDisplayString();
+                }).ToList();
+            var udupMethod = new UdupMethod(methodSymbol, referednodes);
             udupType.Methods.Add(udupMethod);
         }
         
@@ -57,15 +66,13 @@ public class UdupType
 
 public class UdupMethod
 {
-    public UdupMethod(IMethodSymbol methodSymbol, IEnumerable<ReferencedSymbol> references)
+    public UdupMethod(IMethodSymbol methodSymbol, List<string> references)
     {
         Name = methodSymbol.ToDisplayString();
-        
-        UsedIn = references.SelectMany(reference => reference.Locations)
-            .Select(location => location.Location)
-            .ToList();
+
+        UsedIn = references;
     }
 
     public string Name { get; set; }
-    public List<Location> UsedIn { get; set; }
+    public List<string> UsedIn { get; set; }
 }
