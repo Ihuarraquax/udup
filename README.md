@@ -17,3 +17,4 @@ To use this tool you will need to first, run analyzer on your solution (can be m
 - [ ] Split gathering data to build time and processing it at runtime
   - [ ] Analyze codebase and save result to file (Roslyn)
   - [ ] Process file to generate documentation at runtime
+- [ ] Add selectors to events and event handlers in configuration
