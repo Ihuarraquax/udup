@@ -36,10 +36,6 @@ public interface IDomainEventXService
 
 class DomainEventXService : IDomainEventXService
 {
-    public DomainEventXService()
-    {
-    }
-
     public async Task SendXEvent()
     {
         new DomainEventXHappened();

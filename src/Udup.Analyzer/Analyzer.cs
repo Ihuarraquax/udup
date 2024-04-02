@@ -11,46 +11,71 @@ public class Analyzer(Solution solution)
     {
         var walker = new Walker([], data.First().root, data.First().semanticModel, solution);
         walker.Visit(data.First().root);
-        
+
         return walker.UdupTypes;
     }
 }
 
-public class Walker(List<UdupType> udupTypes, SyntaxNode root, SemanticModel semanticModel, Solution solution): CSharpSyntaxWalker
+public class Walker(List<UdupType> udupTypes, SyntaxNode root, SemanticModel semanticModel, Solution solution) : CSharpSyntaxWalker
 {
     public readonly List<UdupType> UdupTypes = udupTypes;
 
     public override void VisitClassDeclaration(ClassDeclarationSyntax node)
     {
         var symbolInfo = semanticModel.GetDeclaredSymbol(node);
-        
-        var udupType = new UdupType { Name = symbolInfo.ToDisplayString()};
 
+        var udupType = new UdupType { Name = symbolInfo.ToDisplayString() };
+
+        //Add interfaces
         foreach (var @interface in symbolInfo.Interfaces)
         {
             udupType.Interfaces.Add(@interface.ToDisplayString());
         }
+
+        var TypeUsages = SymbolFinder.FindCallersAsync(symbolInfo, solution).Result;
+        var result = callers.Select(
+            c =>
+                new
+                {
+                    Who = c.CallingSymbol.ToDisplayString(),
+                    Where = c.Locations.Select(l => new { l.SourceSpan }),
+                });
+        
+        
+        
         
         foreach (var member in symbolInfo.GetMembers()
                      .Where(member => member.Kind == SymbolKind.Method)
                      .Where(member => member.IsImplicitlyDeclared == false)
-                 )
+                )
         {
-            var methodSymbol = (IMethodSymbol) member;
+            var methodSymbol = (IMethodSymbol)member;
             var references = SymbolFinder.FindReferencesAsync(methodSymbol, solution).Result;
             var referednodes = references
                 .SelectMany(reference => reference.Locations)
-                .Select(location =>
-                {
-                    var node =root.FindNode(location.Location.SourceSpan);
-                    var symbol = semanticModel.GetSymbolInfo(node);
-                    
-                    return symbol.Symbol.ToDisplayString();
-                }).ToList();
-            var udupMethod = new UdupMethod(methodSymbol, referednodes);
+                .Select(
+                    location =>
+                    {
+                        var node = root.FindNode(location.Location.SourceSpan);
+                        var symbol = semanticModel.GetSymbolInfo(node);
+
+                        return symbol.Symbol.ToDisplayString();
+                    }).ToList();
+
+            var callers = SymbolFinder.FindCallersAsync(methodSymbol, solution).Result;
+
+            var result = callers.Select(
+                c =>
+                    new
+                    {
+                        Who = c.CallingSymbol.ToDisplayString(),
+                        Where = c.Locations.Select(l => new { l.SourceSpan }),
+                    });
+
+            var udupMethod = new UdupMethod(methodSymbol, result.Select(_ => _.Who).ToList());
             udupType.Methods.Add(udupMethod);
         }
-        
+
         UdupTypes.Add(udupType);
         base.VisitClassDeclaration(node);
     }
@@ -59,9 +84,13 @@ public class Walker(List<UdupType> udupTypes, SyntaxNode root, SemanticModel sem
 public class UdupType
 {
     public string Name { get; set; }
+
     public List<string> Interfaces { get; set; } = [];
+
     public List<UdupMethod> Methods { get; set; } = [];
+
     public List<string> UsedIn { get; set; } = [];
+    public object Implements { get; set; }
 }
 
 public class UdupMethod
@@ -74,5 +103,6 @@ public class UdupMethod
     }
 
     public string Name { get; set; }
+
     public List<string> UsedIn { get; set; }
 }

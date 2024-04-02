@@ -14,31 +14,12 @@
     ],
     Methods: [
       {
-        Name: Udup.WebApp.DomainEventXService.DomainEventXService(IMediator)
+        Name: Udup.WebApp.DomainEventXService.DomainEventXService()
       },
       {
         Name: Udup.WebApp.DomainEventXService.SendXEvent(),
         UsedIn: [
-          {
-            Kind: SourceFile,
-            SourceSpan: {
-              Start: 723,
-              Length: 10
-            },
-            SourceTree: {
-              FilePath: File1.cs,
-              Length: 1883,
-              HasCompilationUnitRoot: true,
-              Options: {
-                LanguageVersion: CSharp12,
-                Language: C#,
-                DocumentationMode: Parse,
-                Errors: null
-              }
-            },
-            IsInSource: true,
-            IsInMetadata: false
-          }
+          Udup.WebApp.Endpoints2.MapDomainEventBEndpointsWithService2(Microsoft.AspNetCore.Builder.WebApplication)
         ]
       }
     ]
@@ -56,53 +37,15 @@
         Name: Udup.WebApp.XActioner.DomainEvents.get
       },
       {
-        Name: Udup.WebApp.XActioner.AddDomainEvent(INotification),
+        Name: Udup.WebApp.XActioner.AddDomainEvent(Udup.Abstractions.IUdupMessage),
         UsedIn: [
-          {
-            Kind: SourceFile,
-            SourceSpan: {
-              Start: 1826,
-              Length: 14
-            },
-            SourceTree: {
-              FilePath: File1.cs,
-              Length: 1883,
-              HasCompilationUnitRoot: true,
-              Options: {
-                LanguageVersion: CSharp12,
-                Language: C#,
-                DocumentationMode: Parse,
-                Errors: null
-              }
-            },
-            IsInSource: true,
-            IsInMetadata: false
-          }
+          Udup.WebApp.XActioner.MakeActionX()
         ]
       },
       {
         Name: Udup.WebApp.XActioner.MakeActionX(),
         UsedIn: [
-          {
-            Kind: SourceFile,
-            SourceSpan: {
-              Start: 1000,
-              Length: 11
-            },
-            SourceTree: {
-              FilePath: File1.cs,
-              Length: 1883,
-              HasCompilationUnitRoot: true,
-              Options: {
-                LanguageVersion: CSharp12,
-                Language: C#,
-                DocumentationMode: Parse,
-                Errors: null
-              }
-            },
-            IsInSource: true,
-            IsInMetadata: false
-          }
+          Udup.WebApp.Endpoints2.MapDomainEventBEndpointsWithService2(Microsoft.AspNetCore.Builder.WebApplication)
         ]
       }
     ]
