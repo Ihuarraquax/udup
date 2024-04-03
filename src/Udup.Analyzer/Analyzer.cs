@@ -31,9 +31,9 @@ public class Walker(List<UdupType> udupTypes, SyntaxNode root, SemanticModel sem
         {
             udupType.Interfaces.Add(@interface.ToDisplayString());
         }
-
         var TypeUsages = SymbolFinder.FindCallersAsync(symbolInfo, solution).Result;
-        var result = callers.Select(
+        var referenced = SymbolFinder.FindReferencesAsync(symbolInfo, solution).Result;
+        var result2 = TypeUsages.Select(
             c =>
                 new
                 {
@@ -41,26 +41,22 @@ public class Walker(List<UdupType> udupTypes, SyntaxNode root, SemanticModel sem
                     Where = c.Locations.Select(l => new { l.SourceSpan }),
                 });
         
+        udupType.UsedIn = result2.Select(_ => _.Who).ToList();
         
-        
-        
+        AddMethods(symbolInfo, udupType);
+
+        UdupTypes.Add(udupType);
+        base.VisitClassDeclaration(node);
+    }
+
+    private void AddMethods(INamedTypeSymbol symbolInfo, UdupType udupType)
+    {
         foreach (var member in symbolInfo.GetMembers()
                      .Where(member => member.Kind == SymbolKind.Method)
                      .Where(member => member.IsImplicitlyDeclared == false)
                 )
         {
             var methodSymbol = (IMethodSymbol)member;
-            var references = SymbolFinder.FindReferencesAsync(methodSymbol, solution).Result;
-            var referednodes = references
-                .SelectMany(reference => reference.Locations)
-                .Select(
-                    location =>
-                    {
-                        var node = root.FindNode(location.Location.SourceSpan);
-                        var symbol = semanticModel.GetSymbolInfo(node);
-
-                        return symbol.Symbol.ToDisplayString();
-                    }).ToList();
 
             var callers = SymbolFinder.FindCallersAsync(methodSymbol, solution).Result;
 
@@ -75,9 +71,6 @@ public class Walker(List<UdupType> udupTypes, SyntaxNode root, SemanticModel sem
             var udupMethod = new UdupMethod(methodSymbol, result.Select(_ => _.Who).ToList());
             udupType.Methods.Add(udupMethod);
         }
-
-        UdupTypes.Add(udupType);
-        base.VisitClassDeclaration(node);
     }
 }
 
@@ -90,7 +83,6 @@ public class UdupType
     public List<UdupMethod> Methods { get; set; } = [];
 
     public List<string> UsedIn { get; set; } = [];
-    public object Implements { get; set; }
 }
 
 public class UdupMethod
